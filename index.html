@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oscar Ensemble</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+:root{
+  --gold:#D4AF37;
+  --gold-dim:#A8892A;
+  --gold-glow:rgba(212,175,55,0.18);
+  --gold-border:rgba(212,175,55,0.28);
+  --bg:#0C0C10;
+  --bg2:#13131A;
+  --bg3:#1A1A24;
+  --bg4:#22222E;
+  --surface:#1E1E2A;
+  --surface2:#252534;
+  --text:#F0EEE8;
+  --text2:#A09E96;
+  --text3:#6A6860;
+  --red:#E05252;
+  --green:#4CAF82;
+  --blue:#5B8EE0;
+  --radius:12px;
+  --radius-sm:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;}
+body{padding:0 0 60px;}
+
+/* ── LAYOUT ── */
+.wrap{max-width:900px;margin:0 auto;padding:24px 16px;}
+
+/* ── HEADER ── */
+.header{text-align:center;padding:32px 20px 24px;position:relative;}
+.header-line{width:80px;height:2px;background:var(--gold);margin:0 auto 20px;}
+.header-title{font-size:36px;font-weight:800;letter-spacing:-0.02em;color:var(--text);}
+.header-title span{color:var(--gold);}
+.header-sub{font-size:13px;color:var(--text2);letter-spacing:0.1em;text-transform:uppercase;margin-top:8px;}
+.header-stars{display:flex;justify-content:center;gap:10px;margin-top:14px;color:var(--gold);font-size:16px;}
+
+/* ── STATS ── */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:20px;}
+.stat{background:var(--surface);border:1px solid var(--gold-border);border-radius:var(--radius-sm);padding:12px 8px;text-align:center;}
+.stat-lbl{font-size:10px;color:var(--gold-dim);letter-spacing:0.08em;text-transform:uppercase;display:block;margin-bottom:4px;}
+.stat-val{font-size:22px;font-weight:700;color:var(--text);}
+
+/* ── PROGRESS ── */
+.progress-row{display:flex;gap:5px;justify-content:center;margin-bottom:20px;}
+.prog-seg{height:4px;border-radius:2px;flex:1;background:var(--bg4);}
+.prog-seg.done{background:var(--gold);}
+.prog-seg.active{background:rgba(212,175,55,0.5);}
+
+/* ── SPIN AREA ── */
+.spin-area{background:var(--surface);border:1px solid var(--gold-border);border-radius:var(--radius);padding:18px;margin-bottom:16px;}
+.spin-lbl{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;}
+.reels{display:flex;gap:8px;margin-bottom:14px;}
+.reel{flex:1;background:var(--bg2);border:1px solid rgba(255,255,255,0.06);border-radius:var(--radius-sm);padding:12px 10px;text-align:center;min-width:0;}
+.reel-lbl{font-size:9px;color:var(--gold-dim);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:6px;}
+.reel-val{font-size:13px;font-weight:600;color:var(--text);line-height:1.3;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+.reel.spin-anim .reel-val{color:var(--gold-dim);animation:flicker 0.05s infinite;}
+@keyframes flicker{0%{opacity:0.4;}100%{opacity:1;}}
+.reel.locked{border-color:var(--gold-border);}
+.reel.locked .reel-val{color:var(--gold);}
+
+.spin-btn{width:100%;padding:13px;background:var(--gold);border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:700;color:#0C0C10;cursor:pointer;letter-spacing:0.02em;transition:background 0.2s,transform 0.1s;}
+.spin-btn:hover{background:#C8A030;}
+.spin-btn:active{transform:scale(0.98);}
+.spin-btn:disabled{opacity:0.3;cursor:not-allowed;transform:none;}
+
+/* ── GENRE PICKER ── */
+.genre-picker{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.genre-card{background:var(--bg2);border:1px solid rgba(255,255,255,0.07);border-radius:var(--radius);padding:16px 12px;cursor:pointer;text-align:center;transition:border-color 0.15s,background 0.15s;}
+.genre-card:hover{border-color:var(--gold-border);background:var(--surface2);}
+.genre-icon{font-size:24px;color:var(--gold);margin-bottom:8px;display:block;}
+.genre-name{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;}
+.genre-examples{font-size:11px;color:var(--text2);line-height:1.4;}
+
+/* ── DRAFT PANEL ── */
+.draft-panel{background:var(--surface);border:1px solid var(--gold-border);border-radius:var(--radius);margin-bottom:16px;overflow:hidden;}
+.draft-hdr{background:var(--bg2);padding:14px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--gold-border);}
+.draft-title{font-size:15px;font-weight:700;color:var(--text);}
+.draft-sub{font-size:11px;color:var(--gold-dim);margin-top:2px;}
+.draft-badge{font-size:11px;color:var(--gold-dim);background:var(--bg3);border:1px solid var(--gold-border);border-radius:20px;padding:2px 10px;}
+
+/* constraint pills */
+.constraint-row{display:flex;gap:6px;padding:10px 16px;background:var(--bg3);border-bottom:1px solid rgba(255,255,255,0.04);}
+.constraint-pill{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:rgba(212,175,55,0.12);color:var(--gold);border:1px solid var(--gold-border);}
+.constraint-pill.era{background:rgba(91,142,224,0.12);color:#5B8EE0;border-color:rgba(91,142,224,0.3);}
+
+.cands-scroll{max-height:420px;overflow-y:auto;padding:10px;scrollbar-width:thin;scrollbar-color:var(--bg4) transparent;}
+
+/* ── CANDIDATE CARD ── */
+.cand{display:flex;gap:12px;align-items:flex-start;background:var(--bg2);border:1px solid rgba(255,255,255,0.06);border-radius:var(--radius-sm);padding:12px;margin-bottom:8px;cursor:pointer;transition:border-color 0.15s,background 0.15s,transform 0.12s;}
+.cand:last-child{margin-bottom:0;}
+.cand:hover{border-color:var(--gold-border);background:var(--surface2);transform:translateY(-2px);}
+.cand.best-match{border-color:rgba(76,175,130,0.4);}
+.cand.risky{border-color:rgba(224,82,82,0.25);}
+.cand-avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:var(--bg);flex-shrink:0;}
+.cand-body{flex:1;min-width:0;}
+.cand-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:5px;}
+.cand-name{font-size:14px;font-weight:700;color:var(--text);}
+.cand-grade{font-size:11px;font-weight:700;padding:2px 7px;border-radius:5px;}
+.grade-s{background:rgba(212,175,55,0.15);color:var(--gold);}
+.grade-a{background:rgba(76,175,130,0.15);color:var(--green);}
+.grade-b{background:rgba(91,142,224,0.15);color:var(--blue);}
+.grade-c{background:rgba(160,158,150,0.12);color:var(--text2);}
+.grade-d{background:rgba(224,82,82,0.12);color:var(--red);}
+.match-tag{font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;background:rgba(76,175,130,0.15);color:var(--green);}
+.mismatch-tag{font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;background:rgba(224,82,82,0.1);color:var(--red);}
+.cand-films{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:5px;}
+.film-chip{font-size:11px;color:var(--text2);background:var(--bg3);border:1px solid rgba(255,255,255,0.05);border-radius:20px;padding:2px 9px;}
+.cand-attrs{display:flex;flex-wrap:wrap;gap:5px;}
+.attr-chip{font-size:10px;padding:1px 7px;border-radius:20px;background:var(--bg3);color:var(--text3);border:1px solid rgba(255,255,255,0.04);}
+.attr-chip.match{background:rgba(212,175,55,0.08);color:var(--gold-dim);border-color:var(--gold-border);}
+.cand-odds{font-size:12px;font-weight:700;color:var(--gold-dim);margin-left:auto;white-space:nowrap;}
+
+/* ── ROLES GRID ── */
+.roles-lbl{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;}
+.roles-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:20px;}
+.role-card{background:var(--surface);border:1px solid rgba(255,255,255,0.06);border-radius:var(--radius);padding:12px 10px;min-height:88px;position:relative;transition:border-color 0.15s;}
+.role-card.active{border-color:var(--gold);background:rgba(212,175,55,0.05);}
+.role-card.filled{border-color:var(--gold-border);}
+.role-icon{font-size:15px;color:var(--gold-dim);margin-bottom:5px;display:block;}
+.role-lbl{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:3px;}
+.role-person{font-size:12px;font-weight:600;color:var(--text);line-height:1.3;}
+.role-empty{font-size:11px;color:var(--text3);margin-top:4px;}
+.role-check{position:absolute;top:8px;right:10px;font-size:13px;color:var(--gold-dim);}
+.role-card-grade{position:absolute;bottom:8px;right:8px;font-size:10px;font-weight:700;padding:1px 5px;border-radius:4px;}
+
+/* ── SIMULATE BTN ── */
+.simulate-btn{width:100%;padding:15px;background:transparent;border:1px solid var(--gold);border-radius:var(--radius-sm);font-size:16px;font-weight:700;color:var(--gold);cursor:pointer;margin-bottom:20px;letter-spacing:0.03em;transition:background 0.2s;}
+.simulate-btn:hover{background:rgba(212,175,55,0.08);}
+.simulate-btn:disabled{opacity:0.25;cursor:not-allowed;}
+
+/* ── RESULT ── */
+.result-box{background:var(--surface);border:1px solid var(--gold-border);border-radius:var(--radius);padding:28px 24px;text-align:center;margin-bottom:20px;}
+.result-icon{font-size:44px;color:var(--gold);margin-bottom:10px;}
+.result-hl{font-size:22px;font-weight:800;color:var(--text);margin-bottom:6px;}
+.result-oscars{font-size:56px;font-weight:800;color:var(--gold);line-height:1;}
+.result-oscars-word{font-size:14px;color:var(--text2);margin-bottom:16px;}
+.result-stats-row{display:flex;justify-content:center;gap:28px;margin-bottom:16px;}
+.result-stat-item{text-align:center;}
+.result-stat-item span{font-size:10px;color:var(--text3);display:block;text-transform:uppercase;letter-spacing:0.07em;}
+.result-stat-item strong{font-size:18px;font-weight:700;color:var(--text);}
+.result-bar-wrap{background:rgba(212,175,55,0.1);height:6px;border-radius:3px;overflow:hidden;margin:0 0 14px;}
+.result-bar{height:100%;background:var(--gold);border-radius:3px;transition:width 1.2s cubic-bezier(.4,0,.2,1);}
+.result-verdict{font-size:13px;color:var(--text2);line-height:1.6;max-width:480px;margin:0 auto 20px;}
+.cast-table{text-align:left;border-top:1px solid rgba(212,175,55,0.15);padding-top:16px;}
+.cast-row2{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+.cast-row2:last-child{border-bottom:none;}
+.cast-role-lbl{font-size:11px;color:var(--text3);}
+.cast-name-lbl{font-size:12px;font-weight:600;color:var(--text);}
+.cast-grade-lbl{font-size:11px;font-weight:700;margin-left:8px;}
+.play-again{width:100%;margin-top:18px;padding:12px;background:transparent;border:1px solid var(--gold-border);border-radius:var(--radius-sm);font-size:14px;font-weight:600;color:var(--gold-dim);cursor:pointer;transition:border-color 0.15s;}
+.play-again:hover{border-color:var(--gold);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="header">
+  <div class="header-line"></div>
+  <div class="header-title">Oscar <span>Ensemble</span></div>
+  <div class="header-sub">Assemble the cast · Win the Academy</div>
+  <div class="header-stars">
+    <i class="ti ti-star"></i>
+    <i class="ti ti-trophy"></i>
+    <i class="ti ti-star"></i>
+  </div>
+</div>
+
+<div class="stats">
+  <div class="stat"><span class="stat-lbl">Oscars</span><span class="stat-val" id="s-oscars">—</span></div>
+  <div class="stat"><span class="stat-lbl">Nominations</span><span class="stat-val" id="s-noms">—</span></div>
+  <div class="stat"><span class="stat-lbl">Box office</span><span class="stat-val" id="s-bo">—</span></div>
+  <div class="stat"><span class="stat-lbl">Critics</span><span class="stat-val" id="s-crit">—</span></div>
+</div>
+
+<div class="progress-row" id="progress-row"></div>
+
+<div class="spin-area">
+  <div class="spin-lbl">Spin the reels</div>
+  <div class="reels" id="reels">
+    <div class="reel"><div class="reel-lbl">Role</div><div class="reel-val" id="rv0">—</div></div>
+    <div class="reel"><div class="reel-lbl">Era</div><div class="reel-val" id="rv1">—</div></div>
+    <div class="reel"><div class="reel-lbl">Bonus</div><div class="reel-val" id="rv2">—</div></div>
+  </div>
+  <button class="spin-btn" id="spin-btn" onclick="doSpin()"><i class="ti ti-rotate-clockwise"></i> &nbsp;Spin the reels</button>
+</div>
+
+<div id="genre-area" style="display:none;">
+  <div style="font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;">Choose your genre</div>
+  <div class="genre-picker" id="genre-picker"></div>
+</div>
+
+<div class="draft-panel" id="draft-panel" style="display:none;">
+  <div class="draft-hdr">
+    <div>
+      <div class="draft-title" id="draft-title">Choose your director</div>
+      <div class="draft-sub" id="draft-sub">Scroll and pick your best option</div>
+    </div>
+    <div class="draft-badge" id="draft-badge">— candidates</div>
+  </div>
+  <div class="constraint-row" id="constraint-row"></div>
+  <div class="cands-scroll" id="cands-scroll"></div>
+</div>
+
+<div style="margin-bottom:20px;">
+  <div class="roles-lbl">Your ensemble</div>
+  <div class="roles-grid" id="roles-grid"></div>
+</div>
+
+<button class="simulate-btn" id="simulate-btn" onclick="simulate()" disabled>
+  <i class="ti ti-trophy"></i> &nbsp;Simulate awards season
+</button>
+
+<div id="result-area" style="display:none;"></div>
+
+</div>
+
+<script>
+const ROLES=[
+  {id:'genre',label:'Genre',icon:'ti-movie'},
+  {id:'director',label:'Director',icon:'ti-video'},
+  {id:'lead_actor',label:'Lead actor',icon:'ti-user'},
+  {id:'lead_actress',label:'Lead actress',icon:'ti-user'},
+  {id:'supp_actor',label:'Supp. actor',icon:'ti-users'},
+  {id:'supp_actress',label:'Supp. actress',icon:'ti-users'},
+  {id:'cinematographer',label:'Cinematographer',icon:'ti-camera'},
+  {id:'composer',label:'Composer',icon:'ti-music'},
+];
+
+/* ── ERA CONSTRAINTS (one group — always non-contradicting) ── */
+const ERA_GROUPS=[
+  {label:'Classic era (pre-1960)',id:'classic'},
+  {label:'New Hollywood (1960s–70s)',id:'newhollywood'},
+  {label:'Blockbuster era (1980s)',id:'eighties'},
+  {label:'Golden 90s (1990s)',id:'nineties'},
+  {label:'2000s prestige',id:'twothousands'},
+  {label:'Modern era (2010s)',id:'tens'},
+  {label:'Recent (2020s)',id:'twenties'},
+];
+
+/* ── BONUS CONSTRAINTS (pick one; never contradicts era) ── */
+const BONUS_GROUPS=[
+  {label:'Name: A – F',id:'nameAF'},
+  {label:'Name: G – L',id:'nameGL'},
+  {label:'Name: M – R',id:'nameMR'},
+  {label:'Name: S – Z',id:'nameSZ'},
+  {label:'Won an Oscar',id:'winner'},
+  {label:'Never won (yet)',id:'nowin'},
+  {label:'RT score 90+',id:'rt90'},
+  {label:'RT score below 80',id:'rt80'},
+  {label:'Box office hit',id:'bofhit'},
+  {label:'Cult classic',id:'cult'},
+  {label:'Foreign-born',id:'foreign'},
+  {label:'American-born',id:'american'},
+  {label:'Stage background',id:'stage'},
+  {label:'Method performer',id:'method'},
+  {label:'Known for one genre',id:'onegen'},
+];
+
+/* ── TALENT DB ── */
+/* grade: S=elite, A=great, B=solid, C=average, D=weak/risky */
+/* era ids reference ERA_GROUPS */
+const DB={
+  director:[
+    {n:'Steven Spielberg',films:['Schindler\'s List (1993)','Saving Private Ryan (1998)','Lincoln (2012)'],era:'nineties',bonus:['winner','rt90','bofhit','nameSZ','american'],grade:'S'},
+    {n:'Martin Scorsese',films:['Goodfellas (1990)','The Departed (2006)','Raging Bull (1980)'],era:'nineties',bonus:['winner','rt90','nameGL','american','method'],grade:'S'},
+    {n:'Francis Ford Coppola',films:['The Godfather (1972)','Apocalypse Now (1979)','The Godfather Part II (1974)'],era:'newhollywood',bonus:['winner','rt90','nameAF','american'],grade:'S'},
+    {n:'Alfred Hitchcock',films:['Vertigo (1958)','Rear Window (1954)','Psycho (1960)'],era:'classic',bonus:['rt90','nameAF','foreign','cult'],grade:'S'},
+    {n:'Billy Wilder',films:['Some Like It Hot (1959)','Sunset Boulevard (1950)','The Apartment (1960)'],era:'classic',bonus:['winner','rt90','nameSZ','foreign','stage'],grade:'S'},
+    {n:'David Lean',films:['Lawrence of Arabia (1962)','The Bridge on the River Kwai (1957)','Doctor Zhivago (1965)'],era:'newhollywood',bonus:['winner','rt90','nameGL','foreign','bofhit'],grade:'S'},
+    {n:'Stanley Kubrick',films:['2001: A Space Odyssey (1968)','The Shining (1980)','Full Metal Jacket (1987)'],era:'newhollywood',bonus:['rt90','nameGL','american','cult'],grade:'S'},
+    {n:'Ingmar Bergman',films:['The Seventh Seal (1957)','Wild Strawberries (1957)','Persona (1966)'],era:'classic',bonus:['rt90','nameAF','foreign','cult'],grade:'S'},
+    {n:'Akira Kurosawa',films:['Seven Samurai (1954)','Rashomon (1950)','Ran (1985)'],era:'classic',bonus:['winner','rt90','nameAF','foreign','cult'],grade:'S'},
+    {n:'Federico Fellini',films:['8½ (1963)','La Dolce Vita (1960)','Amarcord (1973)'],era:'newhollywood',bonus:['winner','rt90','nameAF','foreign','cult'],grade:'S'},
+    {n:'Sidney Lumet',films:['12 Angry Men (1957)','Network (1976)','Dog Day Afternoon (1975)'],era:'newhollywood',bonus:['rt90','nameSZ','american','stage'],grade:'A'},
+    {n:'Roman Polanski',films:['Chinatown (1974)','Rosemary\'s Baby (1968)','The Pianist (2002)'],era:'newhollywood',bonus:['winner','rt90','nameMR','foreign'],grade:'A'},
+    {n:'Bob Fosse',films:['Cabaret (1972)','All That Jazz (1979)','Lenny (1974)'],era:'newhollywood',bonus:['winner','rt90','nameAF','american','stage'],grade:'A'},
+    {n:'John Huston',films:['The Maltese Falcon (1941)','The African Queen (1951)','Chinatown (1974)'],era:'classic',bonus:['winner','rt90','nameGL','american'],grade:'A'},
+    {n:'Miloš Forman',films:['One Flew Over the Cuckoo\'s Nest (1975)','Amadeus (1984)','The People vs. Larry Flynt (1996)'],era:'newhollywood',bonus:['winner','rt90','nameAF','foreign'],grade:'A'},
+    {n:'Ridley Scott',films:['Gladiator (2000)','Blade Runner (1982)','Thelma & Louise (1991)'],era:'eighties',bonus:['nowin','bofhit','rt90','nameSZ','foreign'],grade:'A'},
+    {n:'Oliver Stone',films:['Platoon (1986)','JFK (1991)','Born on the Fourth of July (1989)'],era:'eighties',bonus:['winner','rt90','nameGL','american'],grade:'A'},
+    {n:'Barry Jenkins',films:['Moonlight (2016)','If Beale Street Could Talk (2018)','The Underground Railroad (2021)'],era:'tens',bonus:['winner','rt90','nameAF','american'],grade:'A'},
+    {name:'Wong Kar-wai',films:['In the Mood for Love (2000)','Chungking Express (1994)','2046 (2004)'],era:'twothousands',bonus:['rt90','nameSZ','foreign','cult'],grade:'A'},
+    {n:'Park Chan-wook',films:['Oldboy (2003)','The Handmaiden (2016)','Decision to Leave (2022)'],era:'tens',bonus:['rt90','nameMR','foreign','cult'],grade:'A'},
+    {n:'Alfonso Cuarón',films:['Gravity (2013)','Roma (2018)','Children of Men (2006)'],era:'tens',bonus:['winner','rt90','nameAF','foreign'],grade:'S'},
+    {n:'Christopher Nolan',films:['Oppenheimer (2023)','Dunkirk (2017)','The Dark Knight (2008)'],era:'tens',bonus:['winner','rt90','nameAF','foreign','bofhit'],grade:'S'},
+    {n:'Bong Joon-ho',films:['Parasite (2019)','Memories of Murder (2003)','The Host (2006)'],era:'twenties',bonus:['winner','rt90','nameAF','foreign'],grade:'S'},
+    {n:'Sofia Coppola',films:['Lost in Translation (2003)','The Virgin Suicides (1999)','Marie Antoinette (2006)'],era:'twothousands',bonus:['winner','rt90','nameAF','american','onegen'],grade:'A'},
+    {n:'Jane Campion',films:['The Piano (1993)','The Power of the Dog (2021)','Bright Star (2009)'],era:'nineties',bonus:['winner','rt90','nameAF','foreign'],grade:'A'},
+    {n:'Kathryn Bigelow',films:['The Hurt Locker (2008)','Zero Dark Thirty (2012)','Point Break (1991)'],era:'twothousands',bonus:['winner','rt90','nameAF','american'],grade:'A'},
+    {n:'Paul Thomas Anderson',films:['There Will Be Blood (2007)','Boogie Nights (1997)','The Master (2012)'],era:'twothousands',bonus:['nowin','rt90','nameMR','american','cult','method'],grade:'A'},
+    {n:'Alejandro González Iñárritu',films:['Birdman (2014)','The Revenant (2015)','Babel (2006)'],era:'tens',bonus:['winner','rt90','nameAF','foreign'],grade:'S'},
+    {n:'Joel & Ethan Coen',films:['No Country for Old Men (2007)','Fargo (1996)','True Grit (2010)'],era:'twothousands',bonus:['winner','rt90','nameAF','american'],grade:'S'},
+    {n:'Michael Curtiz',films:['Casablanca (1942)','Mildred Pierce (1945)','Yankee Doodle Dandy (1942)'],era:'classic',bonus:['winner','rt90','nameAF','foreign'],grade:'A'},
+    {n:'Guillermo del Toro',films:['The Shape of Water (2017)','Pan\'s Labyrinth (2006)','Pinocchio (2022)'],era:'tens',bonus:['winner','rt90','nameAF','foreign'],grade:'A'},
+    {n:'Michael Haneke',films:['Amour (2012)','The White Ribbon (2009)','Caché (2005)'],era:'tens',bonus:['winner','rt90','nameAF','foreign','cult'],grade:'A'},
+    {n:'James Cameron',films:['Titanic (1997)','Avatar (2009)','The Terminator (1984)'],era:'nineties',bonus:['winner','bofhit','nameAF','american'],grade:'A'},
+    {n:'Steven Soderbergh',films:['Traffic (2000)','Erin Brockovich (2000)','Contagion (2011)'],era:'twothousands',bonus:['winner','rt90','nameSZ','american'],grade:'A'},
+    {n:'Todd Haynes',films:['Carol (2015)','Far from Heaven (2002)','I\'m Not There (2007)'],era:'tens',bonus:['rt90','nameGL','american','cult'],grade:'B'},
+    {n:'Greta Gerwig',films:['Lady Bird (2017)','Little Women (2019)','Barbie (2023)'],era:'twenties',bonus:['nowin','rt90','nameGL','american','bofhit'],grade:'A'},
+    {n:'Jordan Peele',films:['Get Out (2017)','Us (2019)','Nope (2022)'],era:'tens',bonus:['winner','rt90','nameMR','american'],grade:'A'},
+    {n:'Kelly Reichardt',films:['Certain Women (2016)','First Cow (2019)','Wendy and Lucy (2008)'],era:'tens',bonus:['nowin','rt90','nameAF','american','cult'],grade:'B'},
+    {n:'Luca Guadagnino',films:['Call Me by Your Name (2017)','Suspiria (2018)','Challengers (2024)'],era:'twenties',bonus:['rt90','nameGL','foreign','cult'],grade:'B'},
+    {n:'Darren Aronofsky',films:['Black Swan (2010)','Requiem for a Dream (2000)','The Wrestler (2008)'],era:'twothousands',bonus:['nowin','rt90','nameAF','american','method','cult'],grade:'B'},
+  ],
+  lead_actor:[
+    {n:'Marlon Brando',films:['The Godfather (1972)','A Streetcar Named Desire (1951)','Apocalypse Now (1979)'],era:'newhollywood',bonus:['winner','rt90','nameMR','american','method','stage'],grade:'S'},
+    {n:'Daniel Day-Lewis',films:['There Will Be Blood (2007)','My Left Foot (1989)','Lincoln (2012)'],era:'twothousands',bonus:['winner','rt90','nameAF','foreign','method'],grade:'S'},
+    {n:'Jack Nicholson',films:['One Flew Over the Cuckoo\'s Nest (1975)','As Good as It Gets (1997)','The Shining (1980)'],era:'newhollywood',bonus:['winner','rt90','nameGL','american'],grade:'S'},
+    {n:'Dustin Hoffman',films:['Kramer vs. Kramer (1979)','Rain Man (1988)','Tootsie (1982)'],era:'newhollywood',bonus:['winner','rt90','nameAF','american','method'],grade:'S'},
+    {n:'Robert De Niro',films:['Taxi Driver (1976)','Raging Bull (1980)','The Godfather Part II (1974)'],era:'newhollywood',bonus:['winner','rt90','nameMR','american','method'],grade:'S'},
+    {n:'Paul Newman',films:['The Color of Money (1986)','The Verdict (1982)','Cool Hand Luke (1967)'],era:'eighties',bonus:['winner','rt90','nameMR','american'],grade:'S'},
+    {n:'Spencer Tracy',films:['Boys Town (1938)','Father of the Bride (1950)','Guess Who\'s Coming to Dinner (1967)'],era:'classic',bonus:['winner','rt90','nameSZ','american','stage'],grade:'S'},
+    {n:'Gregory Peck',films:['To Kill a Mockingbird (1962)','Roman Holiday (1953)','12 O\'Clock High (1949)'],era:'classic',bonus:['winner','rt90','nameGL','american'],grade:'S'},
+    {n:'Humphrey Bogart',films:['Casablanca (1942)','The African Queen (1951)','The Maltese Falcon (1941)'],era:'classic',bonus:['winner','rt90','nameAF','american'],grade:'S'},
+    {n:'Gene Hackman',films:['The French Connection (1971)','Unforgiven (1992)','The Royal Tenenbaums (2001)'],era:'newhollywood',bonus:['winner','rt90','nameGL','american'],grade:'S'},
+    {n:'Al Pacino',films:['The Godfather (1972)','Dog Day Afternoon (1975)','Serpico (1973)'],era:'newhollywood',bonus:['winner','rt90','nameAF','american','method','stage'],grade:'S'},
+    {n:'Tom Hanks',films:['Philadelphia (1993)','Forrest Gump (1994)','Cast Away (2000)'],era:'nineties',bonus:['winner','rt90','nameSZ','american'],grade:'S'},
+    {n:'Anthony Hopkins',films:['The Silence of the Lambs (1991)','Nixon (1995)','The Two Popes (2019)'],era:'nineties',bonus:['winner','rt90','nameAF','foreign','stage'],grade:'S'},
+    {n:'Denzel Washington',films:['Training Day (2001)','Malcolm X (1992)','Philadelphia (1993)'],era:'nineties',bonus:['winner','rt90','nameSZ','american'],grade:'S'},
+    {n:'Russell Crowe',films:['Gladiator (2000)','A Beautiful Mind (2001)','The Insider (1999)'],era:'twothousands',bonus:['winner','bofhit','nameMR','foreign'],grade:'A'},
+    {n:'Philip Seymour Hoffman',films:['Capote (2005)','Doubt (2008)','The Master (2012)'],era:'twothousands',bonus:['winner','rt90','nameMR','american','method','stage'],grade:'S'},
+    {n:'Sean Penn',films:['Mystic River (2003)','Milk (2008)','Dead Man Walking (1995)'],era:'twothousands',bonus:['winner','rt90','nameSZ','american','method'],grade:'A'},
+    {n:'Leonardo DiCaprio',films:['The Revenant (2015)','The Wolf of Wall Street (2013)','Titanic (1997)'],era:'tens',bonus:['winner','bofhit','nameGL','american','method'],grade:'S'},
+    {n:'Joaquin Phoenix',films:['Joker (2019)','Walk the Line (2005)','The Master (2012)'],era:'tens',bonus:['winner','rt90','nameAF','american','method'],grade:'S'},
+    {n:'Cillian Murphy',films:['Oppenheimer (2023)','28 Days Later (2002)','Peaky Blinders (2013)'],era:'twenties',bonus:['winner','rt90','nameAF','foreign','method'],grade:'S'},
+    {n:'Paul Mescal',films:['Aftersun (2022)','Normal People (2020)','All of Us Strangers (2023)'],era:'twenties',bonus:['nowin','rt90','nameMR','foreign','method'],grade:'A'},
+    {n:'Timothée Chalamet',films:['Call Me by Your Name (2017)','Dune (2021)','Little Women (2019)'],era:'twenties',bonus:['nowin','bofhit','nameAF','american','method'],grade:'A'},
+    {n:'Ben Kingsley',films:['Gandhi (1982)','Schindler\'s List (1993)','Sexy Beast (2000)'],era:'eighties',bonus:['winner','rt90','nameAF','foreign','method'],grade:'A'},
+    {n:'William Hurt',films:['Kiss of the Spider Woman (1985)','Broadcast News (1987)','Children of a Lesser God (1986)'],era:'eighties',bonus:['winner','rt90','nameSZ','american','stage'],grade:'A'},
+    {n:'Jeff Bridges',films:['Crazy Heart (2009)','The Last Picture Show (1971)','The Big Lebowski (1998)'],era:'twothousands',bonus:['winner','rt90','nameAF','american'],grade:'A'},
+    {n:'Yul Brynner',films:['The King and I (1956)','The Magnificent Seven (1960)','Anastasia (1956)'],era:'classic',bonus:['winner','rt90','nameSZ','foreign','stage'],grade:'A'},
+    {n:'James Stewart',films:['It\'s a Wonderful Life (1946)','Vertigo (1958)','Rear Window (1954)'],era:'classic',bonus:['winner','rt90','nameSZ','american'],grade:'S'},
+    {n:'Peter O\'Toole',films:['Lawrence of Arabia (1962)','Becket (1964)','The Lion in Winter (1968)'],era:'newhollywood',bonus:['nowin','rt90','nameMR','foreign','stage'],grade:'A'},
+    {n:'Warren Beatty',films:['Bonnie and Clyde (1967)','Shampoo (1975)','Reds (1981)'],era:'newhollywood',bonus:['winner','rt90','nameAF','american'],grade:'A'},
+    {n:'Richard Dreyfuss',films:['American Graffiti (1973)','Jaws (1975)','The Goodbye Girl (1977)'],era:'newhollywood',bonus:['winner','rt90','nameMR','american'],grade:'B'},
+    {n:'Nicolas Cage',films:['Leaving Las Vegas (1995)','Mandy (2018)','Pig (2021)'],era:'nineties',bonus:['winner','rt80','nameAF','american'],grade:'C'},
+    {n:'Eddie Redmayne',films:['The Theory of Everything (2014)','The Danish Girl (2015)','Les Misérables (2012)'],era:'tens',bonus:['winner','rt90','nameAF','foreign','stage'],grade:'B'},
+    {n:'Matthew McConaughey',films:['Dallas Buyers Club (2013)','Mud (2012)','True Detective (2014)'],era:'tens',bonus:['winner','rt90','nameMR','american'],grade:'A'},
+    {n:'Colin Firth',films:['The King\'s Speech (2010)','A Single Man (2009)','Pride & Prejudice (2005)'],era:'tens',bonus:['winner','rt90','nameAF','foreign','stage'],grade:'A'},
+    {n:'Brendan Fraser',films:['The Whale (2022)','Gods and Monsters (1998)','The Mummy (1999)'],era:'twenties',bonus:['winner','rt90','nameAF','american'],grade:'A'},
+    {n:'Ryan Gosling',films:['La La Land (2016)','Drive (2011)','Half Nelson (2006)'],era:'tens',bonus:['nowin','rt90','nameMR','american'],grade:'A'},
+    {n:'Adam Driver',films:['Marriage Story (2019)','BlackKklansman (2018)','Silence (2016)'],era:'twenties',bonus:['nowin','rt90','nameAF','american','method'],grade:'A'},
+    {n:'Richard Gere',films:['An Officer and a Gentleman (1982)','Chicago (2002)','Pretty Woman (1990)'],era:'eighties',bonus:['nowin','bofhit','nameMR','american'],grade:'C'},
+    {n:'Ray Liotta',films:['Goodfellas (1990)','Field of Dreams (1989)','Something Wild (1986)'],era:'nineties',bonus:['nowin','rt90','nameMR','american','method'],grade:'B'},
+    {n:'Kevin Costner',films:['Dances with Wolves (1990)','JFK (1991)','The Untouchables (1987)'],era:'nineties',bonus:['winner','bofhit','nameAF','american'],grade:'B'},
+  ],
+  lead_actress:[
+    {n:'Meryl Streep',films:['Sophie\'s Choice (1982)','Kramer vs. Kramer (1979)','The Iron Lady (2011)'],era:'eighties',bonus:['winner','rt90','nameSZ','american','method','stage'],grade:'S'},
+    {n:'Katharine Hepburn',films:['The African Queen (1951)','Guess Who\'s Coming to Dinner (1967)','On Golden Pond (1981)'],era:'classic',bonus:['winner','rt90','nameAF','american','stage'],grade:'S'},
+    {n:'Cate Blanchett',films:['Blue Jasmine (2013)','Elizabeth (1998)','The Aviator (2004)'],era:'twothousands',bonus:['winner','rt90','nameAF','foreign','stage'],grade:'S'},
+    {n:'Bette Davis',films:['All About Eve (1950)','Jezebel (1938)','What Ever Happened to Baby Jane? (1962)'],era:'classic',bonus:['winner','rt90','nameAF','american','stage'],grade:'S'},
+    {n:'Frances McDormand',films:['Fargo (1996)','Three Billboards Outside Ebbing, Missouri (2017)','Nomadland (2020)'],era:'nineties',bonus:['winner','rt90','nameMR','american'],grade:'S'},
+    {n:'Jodie Foster',films:['The Silence of the Lambs (1991)','Taxi Driver (1976)','Contact (1997)'],era:'nineties',bonus:['winner','rt90','nameAF','american'],grade:'S'},
+    {n:'Jessica Lange',films:['Tootsie (1982)','Blue Sky (1994)','Frances (1982)'],era:'eighties',bonus:['winner','rt90','nameAF','american'],grade:'S'},
+    {n:'Audrey Hepburn',films:['Roman Holiday (1953)','Breakfast at Tiffany\'s (1961)','Sabrina (1954)'],era:'classic',bonus:['winner','rt90','nameAF','foreign','stage'],grade:'S'},
+    {n:'Ingrid Bergman',films:['Casablanca (1942)','Gaslight (1944)','Anastasia (1956)'],era:'classic',bonus:['winner','rt90','nameAF','foreign'],grade:'S'},
+    {n:'Jane Fonda',films:['Klute (1971)','Coming Home (1978)','The China Syndrome (1979)'],era:'newhollywood',bonus:['winner','rt90','nameAF','american','stage'],grade:'S'},
+    {n:'Glenda Jackson',films:['Women in Love (1969)','Sunday Bloody Sunday (1971)','A Touch of Class (1973)'],era:'newhollywood',bonus:['winner','rt90','nameAF','foreign','stage'],grade:'A'},
+    {n:'Sally Field',films:['Norma Rae (1979)','Places in the Heart (1984)','Steel Magnolias (1989)'],era:'eighties',bonus:['winner','rt90','nameSZ','american'],grade:'A'},
+    {n:'Susan Sarandon',films:['Thelma & Louise (1991)','Dead Man Walking (1995)','Atlantic City (1980)'],era:'nineties',bonus:['winner','rt90','nameSZ','american','stage'],grade:'A'},
+    {n:'Sigourney Weaver',films:['Aliens (1986)','Working Girl (1988)','The Ice Storm (1997)'],era:'eighties',bonus:['nowin','rt90','nameSZ','american'],grade:'B'},
+    {n:'Nicole Kidman',films:['The Hours (2002)','Moulin Rouge! (2001)','Eyes Wide Shut (1999)'],era:'twothousands',bonus:['winner','rt90','nameMR','foreign'],grade:'A'},
+    {n:'Natalie Portman',films:['Black Swan (2010)','Jackie (2016)','Closer (2004)'],era:'tens',bonus:['winner','rt90','nameMR','american','method'],grade:'A'},
+    {n:'Halle Berry',films:['Monster\'s Ball (2001)','Boomerang (1992)','X-Men (2000)'],era:'twothousands',bonus:['winner','rt80','nameAF','american'],grade:'B'},
+    {n:'Charlize Theron',films:['Monster (2003)','North Country (2005)','Mad Max: Fury Road (2015)'],era:'twothousands',bonus:['winner','rt90','nameAF','foreign','method'],grade:'A'},
+    {n:'Hilary Swank',films:['Boys Don\'t Cry (1999)','Million Dollar Baby (2004)','Freedom Writers (2007)'],era:'twothousands',bonus:['winner','rt90','nameSZ','american','method'],grade:'A'},
+    {n:'Reese Witherspoon',films:['Walk the Line (2005)','Election (1999)','Wild (2014)'],era:'twothousands',bonus:['winner','bofhit','nameSZ','american'],grade:'B'},
+    {n:'Marion Cotillard',films:['La Vie en Rose (2007)','Rust and Bone (2012)','The Immigrant (2013)'],era:'twothousands',bonus:['winner','rt90','nameMR','foreign'],grade:'A'},
+    {n:'Viola Davis',films:['Fences (2016)','Doubt (2008)','Ma Rainey\'s Black Bottom (2020)'],era:'tens',bonus:['winner','rt90','nameSZ','american','stage'],grade:'S'},
+    {n:'Olivia Colman',films:['The Favourite (2018)','Roma (2018)','Empire of Light (2022)'],era:'twenties',bonus:['winner','rt90','nameAF','foreign','stage'],grade:'S'},
+    {n:'Renée Zellweger',films:['Judy (2019)','Bridget Jones\'s Diary (2001)','Chicago (2002)'],era:'twenties',bonus:['winner','rt90','nameSZ','american'],grade:'A'},
+    {n:'Michelle Yeoh',films:['Everything Everywhere All at Once (2022)','Crouching Tiger, Hidden Dragon (2000)','Crazy Rich Asians (2018)'],era:'twenties',bonus:['winner','rt90','nameSZ','foreign'],grade:'S'},
+    {n:'Ana de Armas',films:['Blonde (2022)','Knives Out (2019)','No Time to Die (2021)'],era:'twenties',bonus:['nowin','bofhit','nameAF','foreign'],grade:'C'},
+    {n:'Carey Mulligan',films:['An Education (2009)','Promising Young Woman (2020)','Drive (2011)'],era:'tens',bonus:['nowin','rt90','nameMR','foreign','stage'],grade:'A'},
+    {n:'Saoirse Ronan',films:['Lady Bird (2017)','Brooklyn (2015)','Little Women (2019)'],era:'tens',bonus:['nowin','rt90','nameSZ','foreign'],grade:'A'},
+    {n:'Emma Stone',films:['La La Land (2016)','Birdman (2014)','Poor Things (2023)'],era:'twenties',bonus:['winner','rt90','nameSZ','american'],grade:'S'},
+    {n:'Cynthia Erivo',films:['Harriet (2019)','Widows (2018)','Genius: Aretha (2021)'],era:'twenties',bonus:['nowin','rt90','nameAF','foreign','stage'],grade:'A'},
+    {n:'Sandra Bullock',films:['Gravity (2013)','The Blind Side (2009)','Speed (1994)'],era:'tens',bonus:['winner','bofhit','nameSZ','american'],grade:'B'},
+    {n:'Anne Bancroft',films:['The Graduate (1967)','The Pumpkin Eater (1964)','Agnes of God (1985)'],era:'newhollywood',bonus:['winner','rt90','nameAF','american','stage'],grade:'A'},
+  ],
+  supp_actor:[
+    {n:'Heath Ledger',films:['The Dark Knight (2008)','Brokeback Mountain (2005)','Monster\'s Ball (2001)'],era:'twothousands',bonus:['winner','rt90','nameGL','foreign','method'],grade:'S'},
+    {n:'Christoph Waltz',films:['Inglourious Basterds (2009)','Django Unchained (2012)','Big Eyes (2014)'],era:'tens',bonus:['winner','rt90','nameSZ','foreign','stage'],grade:'S'},
+    {n:'Philip Seymour Hoffman',films:['Doubt (2008)','Almost Famous (2000)','Magnolia (1999)'],era:'twothousands',bonus:['winner','rt90','nameMR','american','stage','method'],grade:'S'},
+    {n:'Mahershala Ali',films:['Moonlight (2016)','Green Book (2018)','True Detective (2014)'],era:'tens',bonus:['winner','rt90','nameMR','american'],grade:'S'},
+    {n:'Gene Hackman',films:['The French Connection (1971)','Unforgiven (1992)','Hoosiers (1986)'],era:'newhollywood',bonus:['winner','rt90','nameGL','american'],grade:'S'},
+    {n:'Jason Robards',films:['All the President\'s Men (1976)','Julia (1977)','Magnolia (1999)'],era:'newhollywood',bonus:['winner','rt90','nameMR','american','stage'],grade:'S'},
+    {n:'Walter Matthau',films:['The Fortune Cookie (1966)','The Odd Couple (1968)','Kotch (1971)'],era:'newhollywood',bonus:['winner','rt90','nameSZ','american','stage'],grade:'A'},
+    {n:'Melvyn Douglas',films:['Hud (1963)','Being There (1979)','I Never Sang for My Father (1970)'],era:'newhollywood',bonus:['winner','rt90','nameMR','american','stage'],grade:'A'},
+    {n:'Karl Malden',films:['A Streetcar Named Desire (1951)','On the Waterfront (1954)','Patton (1970)'],era:'classic',bonus:['winner','rt90','nameMR','american','stage'],grade:'A'},
+    {n:'Peter Ustinov',films:['Spartacus (1960)','Topkapi (1964)','Death on the Nile (1978)'],era:'newhollywood',bonus:['winner','rt90','nameSZ','foreign','stage'],grade:'A'},
+    {n:'Robert De Niro',films:['The Godfather Part II (1974)','Heat (1995)','Goodfellas (1990)'],era:'newhollywood',bonus:['winner','rt90','nameMR','american','method'],grade:'S'},
+    {n:'Michael Caine',films:['The Man Who Would Be King (1975)','Hannah and Her Sisters (1986)','The Cider House Rules (1999)'],era:'eighties',bonus:['winner','rt90','nameMR','foreign','stage'],grade:'A'},
+    {n:'Ed Harris',films:['The Right Stuff (1983)','Apollo 13 (1995)','Pollock (2000)'],era:'eighties',bonus:['nowin','rt90','nameMR','american','stage'],grade:'A'},
+    {n:'Tommy Lee Jones',films:['The Fugitive (1993)','JFK (1991)','Lincoln (2012)'],era:'nineties',bonus:['winner','rt90','nameSZ','american'],grade:'A'},
+    {n:'Kevin Spacey',films:['The Usual Suspects (1995)','American Beauty (1999)','L.A. Confidential (1997)'],era:'nineties',bonus:['winner','rt90','nameSZ','american','stage'],grade:'A'},
+    {n:'Robin Williams',films:['Good Will Hunting (1997)','Good Morning Vietnam (1987)','The Fisher King (1991)'],era:'nineties',bonus:['winner','rt90','nameSZ','american','stage'],grade:'A'},
+    {n:'Javier Bardem',films:['No Country for Old Men (2007)','The Sea Inside (2004)','Skyfall (2012)'],era:'twothousands',bonus:['winner','rt90','nameAF','foreign'],grade:'A'},
+    {n:'Brad Pitt',films:['Once Upon a Time in Hollywood (2019)','Moneyball (2011)','Inglourious Basterds (2009)'],era:'tens',bonus:['winner','bofhit','nameAF','american'],grade:'A'},
+    {n:'Mark Rylance',films:['Bridge of Spies (2015)','Dunkirk (2017)','Wolf Hall (2015)'],era:'tens',bonus:['winner','rt90','nameMR','foreign','stage'],grade:'A'},
+    {n:'Sam Rockwell',films:['Three Billboards Outside Ebbing, Missouri (2017)','Moon (2009)','Vice (2018)'],era:'tens',bonus:['winner','rt90','nameSZ','american'],grade:'A'},
+    {n:'Daniel Kaluuya',films:['Get Out (2017)','Judas and the Black Messiah (2021)','Black Panther (2018)'],era:'twenties',bonus:['winner','rt90','nameAF','foreign'],grade:'A'},
+    {n:'Troy Kotsur',films:['CODA (2021)','Frisky (2014)','No Ordinary Hero (2013)'],era:'twenties',bonus:['winner','rt90','nameSZ','american'],grade:'A'},
+    {n:'Ke Huy Quan',films:['Everything Everywhere All at Once (2022)','Indiana Jones and the Temple of Doom (1984)','The Goonies (1985)'],era:'twenties',bonus:['winner','rt90','nameAF','foreign'],grade:'A'},
+    {n:'Kieran Culkin',films:['A Real Pain (2024)','Succession (2018)','Scott Pilgrim vs. the World (2010)'],era:'twenties',bonus:['winner','rt90','nameAF','american'],grade:'A'},
+    {n:'George Clooney',films:['Syriana (2005)','Michael Clayton (2007)','Up in the Air (2009)'],era:'twothousands',bonus:['winner','rt90','nameAF','american'],grade:'A'},
+    {n:'Benicio del Toro',films:['Traffic (2000)','21 Grams (2003)','Sicario (2015)'],era:'twothousands',bonus:['winner','rt90','nameAF','foreign'],grade:'A'},
+    {n:'Matt Damon',films:['Good Will Hunting (1997)','The Martian (2015)','The Talented Mr. Ripley (1999)'],era:'nineties',bonus:['winner','bofhit','nameMR','american'],grade:'B'},
+    {n:'John Malkovich',films:['Places in the Heart (1984)','In the Line of Fire (1993)','Being John Malkovich (1999)'],era:'eighties',bonus:['nowin','rt90','nameMR','american','stage','method'],grade:'B'},
+    {n:'Forest Whitaker',films:['Bird (1988)','Ghost Dog (1999)','The Last King of Scotland (2006)'],era:'twenties',bonus:['winner','rt90','nameSZ','american'],grade:'A'},
+    {n:'Anthony Minghella',films:['Truly Madly Deeply (1990)','The English Patient (1996)','Cold Mountain (2003)'],era:'nineties',bonus:['winner','rt90','nameMR','foreign'],grade:'B'},
+  ],
+  supp_actress:[
+    {n:'Cate Blanchett',films:['The Aviator (2004)','Notes on a Scandal (2006)','Babel (2006)'],era:'twothousands',bonus:['winner','rt90','nameAF','foreign','stage'],grade:'S'},
+    {n:'Meryl Streep',films:['Kramer vs. Kramer (1979)','Adaptation (2002)','Heartburn (1986)'],era:'eighties',bonus:['winner','rt90','nameSZ','american','stage'],grade:'S'},
+    {n:'Judi Dench',films:['Shakespeare in Love (1998)','Notes on a Scandal (2006)','Philomena (2013)'],era:'nineties',bonus:['winner','rt90','nameAF','foreign','stage'],grade:'S'},
+    {n:'Maggie Smith',films:['California Suite (1978)','Gosford Park (2001)','The Best Exotic Marigold Hotel (2011)'],era:'twothousands',bonus:['winner','rt90','nameSZ','foreign','stage'],grade:'S'},
+    {n:'Dianne Wiest',films:['Hannah and Her Sisters (1986)','Bullets Over Broadway (1994)','Edward Scissorhands (1990)'],era:'eighties',bonus:['winner','rt90','nameAF','american','stage'],grade:'S'},
+    {n:'Penélope Cruz',films:['Vicky Cristina Barcelona (2008)','Volver (2006)','Parallel Mothers (2021)'],era:'twothousands',bonus:['winner','rt90','nameMR','foreign'],grade:'A'},
+    {n:'Lupita Nyong\'o',films:['12 Years a Slave (2013)','Black Panther (2018)','Us (2019)'],era:'tens',bonus:['winner','rt90','nameMR','foreign'],grade:'S'},
+    {n:'Jennifer Hudson',films:['Dreamgirls (2006)','Respect (2021)','The Secret Life of Bees (2008)'],era:'twothousands',bonus:['winner','rt90','nameAF','american','stage'],grade:'A'},
+    {n:'Angelica Huston',films:['Prizzi\'s Honor (1985)','The Grifters (1990)','The Addams Family (1991)'],era:'eighties',bonus:['winner','rt90','nameAF','american'],grade:'A'},
+    {n:'Tatum O\'Neal',films:['Paper Moon (1973)','Bad News Bears (1976)','Little Darlings (1980)'],era:'newhollywood',bonus:['winner','rt90','nameSZ','american'],grade:'A'},
+    {n:'Goldie Hawn',films:['Cactus Flower (1969)','Private Benjamin (1980)','The First Wives Club (1996)'],era:'newhollywood',bonus:['winner','bofhit','nameAF','american'],grade:'B'},
+    {n:'Whoopi Goldberg',films:['Ghost (1990)','The Color Purple (1985)','Sister Act (1992)'],era:'nineties',bonus:['winner','bofhit','nameSZ','american'],grade:'B'},
+    {n:'Octavia Spencer',films:['The Help (2011)','Hidden Figures (2016)','The Shape of Water (2017)'],era:'tens',bonus:['winner','rt90','nameSZ','american'],grade:'A'},
+    {n:'Viola Davis',films:['Doubt (2008)','Prisoners (2013)','Suicide Squad (2016)'],era:'twothousands',bonus:['winner','rt90','nameSZ','american','stage'],grade:'S'},
+    {n:'Kate Winslet',films:['The Reader (2008)','Eternal Sunshine of the Spotless Mind (2004)','Heavenly Creatures (1994)'],era:'twothousands',bonus:['winner','rt90','nameSZ','foreign'],grade:'S'},
+    {n:'Tilda Swinton',films:['Michael Clayton (2007)','We Need to Talk About Kevin (2011)','Moonrise Kingdom (2012)'],era:'twothousands',bonus:['winner','rt90','nameSZ','foreign','cult'],grade:'A'},
+    {n:'Regina King',films:['If Beale Street Could Talk (2018)','Seven Seconds (2018)','Watchmen (2019)'],era:'twenties',bonus:['winner','rt90','nameMR','american'],grade:'A'},
+    {n:'Laura Dern',films:['Wild at Heart (1990)','Jurassic Park (1993)','Marriage Story (2019)'],era:'twenties',bonus:['winner','rt90','nameGL','american'],grade:'A'},
+    {n:'Allison Janney',films:['I, Tonya (2017)','Primary Colors (1998)','The West Wing (1999)'],era:'tens',bonus:['winner','rt90','nameAF','american','stage'],grade:'A'},
+    {n:'Ali MacGraw',films:['Love Story (1970)','The Getaway (1972)','Convoy (1978)'],era:'newhollywood',bonus:['nowin','bofhit','nameMR','american'],grade:'D'},
+    {n:'Rashida Jones',films:['The Social Network (2010)','I Love You, Man (2009)','On the Rocks (2020)'],era:'tens',bonus:['nowin','rt80','nameMR','american'],grade:'D'},
+    {n:'Hailee Steinfeld',films:['True Grit (2010)','The Edge of Seventeen (2016)','Dickinson (2019)'],era:'tens',bonus:['nowin','rt90','nameSZ','american'],grade:'B'},
+    {n:'Amy Adams',films:['Junebug (2005)','American Hustle (2013)','Vice (2018)'],era:'tens',bonus:['nowin','rt90','nameMR','american'],grade:'A'},
+    {n:'Saoirse Ronan',films:['Atonement (2007)','Brooklyn (2015)','Little Women (2019)'],era:'tens',bonus:['nowin','rt90','nameSZ','foreign','stage'],grade:'A'},
+    {n:'Emily Blunt',films:['The Devil Wears Prada (2006)','A Quiet Place (2018)','Oppenheimer (2023)'],era:'twenties',bonus:['winner','rt90','nameMR','foreign','stage'],grade:'A'},
+    {n:'Ariana DeBose',films:['West Side Story (2021)','The Prom (2020)','Schmigadoon! (2021)'],era:'twenties',bonus:['winner','rt90','nameAF','american','stage'],grade:'A'},
+    {n:'Da\'Vine Joy Randolph',films:['The Holdovers (2023)','Dolemite Is My Name (2019)','Only Murders in the Building (2021)'],era:'twenties',bonus:['winner','rt90','nameMR','american','stage'],grade:'A'},
+    {n:'Jamie Lee Curtis',films:['Everything Everywhere All at Once (2022)','Halloween (1978)','A Fish Called Wanda (1988)'],era:'twenties',bonus:['winner','rt90','nameAF','american'],grade:'B'},
+    {n:'Claire Foy',films:['The Crown (2016)','First Man (2018)','Unsane (2018)'],era:'tens',bonus:['nowin','rt90','nameAF','foreign','stage'],grade:'B'},
+    {n:'Caitriona Balfe',films:['Belfast (2021)','Outlander (2014)','Ford v Ferrari (2019)'],era:'twenties',bonus:['nowin','rt90','nameAF','foreign'],grade:'B'},
+  ],
+  cinematographer:[
+    {n:'Roger Deakins',films:['Blade Runner 2049 (2017)','1917 (2019)','Skyfall (2012)'],era:'tens',bonus:['winner','rt90','nameMR','foreign'],grade:'S'},
+    {n:'Emmanuel Lubezki',films:['Gravity (2013)','Birdman (2014)','The Revenant (2015)'],era:'tens',bonus:['winner','rt90','nameGL','foreign'],grade:'S'},
+    {n:'Vittorio Storaro',films:['Apocalypse Now (1979)','Reds (1981)','The Last Emperor (1987)'],era:'newhollywood',bonus:['winner','rt90','nameSZ','foreign'],grade:'S'},
+    {n:'Gordon Willis',films:['The Godfather (1972)','Annie Hall (1977)','All the President\'s Men (1976)'],era:'newhollywood',bonus:['nowin','rt90','nameSZ','american','cult'],grade:'S'},
+    {n:'Sven Nykvist',films:['Cries and Whispers (1972)','Fanny and Alexander (1982)','The Unbearable Lightness of Being (1988)'],era:'newhollywood',bonus:['winner','rt90','nameSZ','foreign'],grade:'S'},
+    {n:'Gregg Toland',films:['Citizen Kane (1941)','The Grapes of Wrath (1940)','Wuthering Heights (1939)'],era:'classic',bonus:['nowin','rt90','nameSZ','american'],grade:'S'},
+    {n:'Conrad Hall',films:['Butch Cassidy and the Sundance Kid (1969)','American Beauty (1999)','Road to Perdition (2002)'],era:'newhollywood',bonus:['winner','rt90','nameAF','american'],grade:'S'},
+    {n:'Vilmos Zsigmond',films:['The Deer Hunter (1978)','Close Encounters (1977)','McCabe & Mrs. Miller (1971)'],era:'newhollywood',bonus:['winner','rt90','nameSZ','foreign'],grade:'A'},
+    {n:'Nestor Almendros',films:['Days of Heaven (1978)','Kramer vs. Kramer (1979)','Sophie\'s Choice (1982)'],era:'newhollywood',bonus:['winner','rt90','nameMR','foreign'],grade:'A'},
+    {n:'Freddie Young',films:['Lawrence of Arabia (1962)','Doctor Zhivago (1965)','Ryan\'s Daughter (1970)'],era:'newhollywood',bonus:['winner','rt90','nameSZ','foreign'],grade:'S'},
+    {n:'Robert Richardson',films:['JFK (1991)','The Aviator (2004)','Inglourious Basterds (2009)'],era:'nineties',bonus:['winner','rt90','nameMR','american'],grade:'A'},
+    {n:'Darius Khondji',films:['Se7en (1995)','Midnight in Paris (2011)','The Lost City of Z (2016)'],era:'nineties',bonus:['nowin','rt90','nameAF','foreign'],grade:'A'},
+    {n:'Hoyte van Hoytema',films:['Interstellar (2014)','Dunkirk (2017)','Oppenheimer (2023)'],era:'tens',bonus:['nowin','rt90','nameSZ','foreign'],grade:'A'},
+    {n:'Linus Sandgren',films:['La La Land (2016)','No Time to Die (2021)','First Man (2018)'],era:'tens',bonus:['winner','rt90','nameGL','foreign'],grade:'A'},
+    {n:'Janusz Kamiński',films:['Schindler\'s List (1993)','Saving Private Ryan (1998)','Lincoln (2012)'],era:'nineties',bonus:['winner','rt90','nameAF','foreign'],grade:'S'},
+    {n:'Wally Pfister',films:['Inception (2010)','The Dark Knight (2008)','Batman Begins (2005)'],era:'tens',bonus:['winner','rt90','nameSZ','american'],grade:'A'},
+    {n:'Bruno Delbonnel',films:['Amélie (2001)','Harry Potter and the Half-Blood Prince (2009)','Inside Llewyn Davis (2013)'],era:'twothousands',bonus:['nowin','rt90','nameAF','foreign'],grade:'A'},
+    {n:'Rodrigo Prieto',films:['Barbie (2023)','Silence (2016)','Brokeback Mountain (2005)'],era:'twenties',bonus:['nowin','rt90','nameMR','foreign'],grade:'A'},
+    {n:'Bradford Young',films:['Arrival (2016)','Selma (2014)','A Most Violent Year (2014)'],era:'tens',bonus:['nowin','rt90','nameAF','american'],grade:'B'},
+    {n:'Dick Pope',films:['Mr. Turner (2014)','All or Nothing (2002)','The Illusionist (2010)'],era:'tens',bonus:['nowin','rt90','nameAF','foreign'],grade:'B'},
+    {n:'Ben Davis',films:['Kick-Ass (2010)','Doctor Strange (2016)','Three Billboards Outside Ebbing, Missouri (2017)'],era:'tens',bonus:['nowin','rt80','nameAF','foreign'],grade:'C'},
+  ],
+  composer:[
+    {n:'John Williams',films:['Schindler\'s List (1993)','Star Wars (1977)','E.T. the Extra-Terrestrial (1982)'],era:'nineties',bonus:['winner','rt90','nameSZ','american','onegen'],grade:'S'},
+    {n:'Ennio Morricone',films:['The Good, the Bad and the Ugly (1966)','Cinema Paradiso (1988)','The Hateful Eight (2015)'],era:'newhollywood',bonus:['winner','rt90','nameMR','foreign'],grade:'S'},
+    {n:'Bernard Herrmann',films:['Psycho (1960)','Vertigo (1958)','Citizen Kane (1941)'],era:'classic',bonus:['nowin','rt90','nameAF','american','cult'],grade:'S'},
+    {n:'Hans Zimmer',films:['The Lion King (1994)','Inception (2010)','Gladiator (2000)'],era:'nineties',bonus:['winner','rt90','nameSZ','foreign','bofhit'],grade:'S'},
+    {n:'Jerry Goldsmith',films:['Chinatown (1974)','Patton (1970)','Planet of the Apes (1968)'],era:'newhollywood',bonus:['winner','rt90','nameAF','american'],grade:'S'},
+    {n:'Max Steiner',films:['Gone with the Wind (1939)','Casablanca (1942)','King Kong (1933)'],era:'classic',bonus:['winner','rt90','nameSZ','foreign'],grade:'S'},
+    {n:'Nino Rota',films:['The Godfather (1972)','8½ (1963)','Romeo and Juliet (1968)'],era:'newhollywood',bonus:['winner','rt90','nameMR','foreign'],grade:'S'},
+    {n:'Erich Wolfgang Korngold',films:['The Adventures of Robin Hood (1938)','Kings Row (1942)','Anthony Adverse (1936)'],era:'classic',bonus:['winner','rt90','nameMR','foreign'],grade:'A'},
+    {n:'Georges Delerue',films:['Contempt (1963)','Day for Night (1973)','Platoon (1986)'],era:'newhollywood',bonus:['winner','rt90','nameAF','foreign'],grade:'A'},
+    {n:'Miklos Rozsa',films:['Spellbound (1945)','Ben-Hur (1959)','El Cid (1961)'],era:'classic',bonus:['winner','rt90','nameMR','foreign'],grade:'A'},
+    {n:'Jonny Greenwood',films:['There Will Be Blood (2007)','The Power of the Dog (2021)','Spencer (2021)'],era:'tens',bonus:['nowin','rt90','nameAF','foreign','cult'],grade:'A'},
+    {n:'Ludwig Göransson',films:['Black Panther (2018)','Oppenheimer (2023)','Tenet (2020)'],era:'twenties',bonus:['winner','rt90','nameAF','foreign'],grade:'A'},
+    {n:'Alexandre Desplat',films:['The Grand Budapest Hotel (2014)','The Shape of Water (2017)','The Queen (2006)'],era:'tens',bonus:['winner','rt90','nameAF','foreign'],grade:'A'},
+    {n:'Trent Reznor & Atticus Ross',films:['The Social Network (2010)','Soul (2020)','Gone Girl (2014)'],era:'tens',bonus:['winner','rt90','nameSZ','american','cult'],grade:'A'},
+    {n:'Danny Elfman',films:['Batman (1989)','Big Eyes (2014)','Edward Scissorhands (1990)'],era:'eighties',bonus:['nowin','bofhit','nameAF','american'],grade:'B'},
+    {n:'Ryuichi Sakamoto',films:['Merry Christmas Mr. Lawrence (1983)','The Last Emperor (1987)','The Revenant (2015)'],era:'eighties',bonus:['winner','rt90','nameSZ','foreign','cult'],grade:'A'},
+    {n:'Elmer Bernstein',films:['The Magnificent Seven (1960)','To Kill a Mockingbird (1962)','The Age of Innocence (1993)'],era:'classic',bonus:['winner','rt90','nameMR','american'],grade:'A'},
+    {n:'Henry Mancini',films:['Breakfast at Tiffany\'s (1961)','The Pink Panther (1963)','Days of Wine and Roses (1962)'],era:'classic',bonus:['winner','rt90','nameMR','american'],grade:'A'},
+    {n:'Hildur Guðnadóttir',films:['Joker (2019)','Chernobyl (2019)','Women at War (2018)'],era:'twenties',bonus:['winner','rt90','nameAF','foreign'],grade:'A'},
+    {n:'Justin Hurwitz',films:['La La Land (2016)','First Man (2018)','Babylon (2022)'],era:'tens',bonus:['winner','rt90','nameAF','american'],grade:'A'},
+    {n:'Thomas Newman',films:['American Beauty (1999)','The Shawshank Redemption (1994)','1917 (2019)'],era:'nineties',bonus:['nowin','rt90','nameSZ','american'],grade:'B'},
+  ],
+};
+
+const GENRES=[
+  {name:'Crime Drama',icon:'ti-spy',examples:'The Godfather, Chinatown, Parasite',score:90},
+  {name:'Historical Epic',icon:'ti-sword',examples:'Lawrence of Arabia, Lincoln, Schindler\'s List',score:88},
+  {name:'Psychological Thriller',icon:'ti-brain',examples:'Silence of the Lambs, Black Swan, Mulholland Drive',score:83},
+  {name:'War Drama',icon:'ti-military-award',examples:'Apocalypse Now, 1917, Dunkirk',score:87},
+  {name:'Romantic Drama',icon:'ti-heart',examples:'Casablanca, Lost in Translation, Carol',score:81},
+  {name:'Biographical Drama',icon:'ti-user-star',examples:'Oppenheimer, Ray, Judy',score:86},
+  {name:'Social Realism',icon:'ti-world',examples:'Moonlight, Spotlight, Nomadland',score:89},
+  {name:'Dark Comedy',icon:'ti-masks-theater',examples:'The Favourite, Knives Out, Barbie',score:80},
+  {name:'Sci-Fi Drama',icon:'ti-planet',examples:'Arrival, Ex Machina, Her',score:78},
+];
+
+const GRADE_COLORS={S:'#D4AF37',A:'#4CAF82',B:'#5B8EE0',C:'#A09E96',D:'#E05252'};
+const GRADE_BG={S:'rgba(212,175,55,0.15)',A:'rgba(76,175,130,0.15)',B:'rgba(91,142,224,0.15)',C:'rgba(160,158,150,0.1)',D:'rgba(224,82,82,0.1)'};
+const AVATAR_COLORS=['#7C5CBF','#2E8B57','#C0392B','#2471A3','#B7950B','#1E8449','#884EA0','#1A5276','#B03A2E'];
+
+let picks={}, currentRole=null, currentConstraints=null, currentCandidates=[];
+
+function getAvatarColor(name){
+  let h=0; for(let c of name) h=(h*31+c.charCodeAt(0))&0xFFFFFF;
+  return AVATAR_COLORS[Math.abs(h)%AVATAR_COLORS.length];
+}
+function initials(name){
+  const p=name.trim().split(/\s+/);
+  if(p.length>=2)return(p[0][0]+p[p.length-1][0]).toUpperCase();
+  return name.slice(0,2).toUpperCase();
+}
+
+function initProgress(){
+  const r=document.getElementById('progress-row');
+  r.innerHTML=ROLES.map((_,i)=>`<div class="prog-seg" id="ps${i}"></div>`).join('');
+}
+function updateProgress(){
+  const filled=Object.keys(picks).length;
+  ROLES.forEach((_,i)=>{
+    const s=document.getElementById('ps'+i);
+    if(!s)return;
+    if(i<filled)s.className='prog-seg done';
+    else if(i===filled)s.className='prog-seg active';
+    else s.className='prog-seg';
+  });
+  document.getElementById('simulate-btn').disabled=filled<8;
+}
+
+function renderGrid(){
+  const g=document.getElementById('roles-grid');
+  g.innerHTML=ROLES.map(r=>{
+    const p=picks[r.id];
+    const isActive=currentRole===r.id;
+    let gradeHtml='';
+    if(p&&p.grade){gradeHtml=`<div class="role-card-grade" style="background:${GRADE_BG[p.grade]};color:${GRADE_COLORS[p.grade]}">${p.grade}</div>`;}
+    return `<div class="role-card ${p?'filled':''} ${isActive?'active':''}">
+      <i class="ti ${r.icon} role-icon"></i>
+      <div class="role-lbl">${r.label}</div>
+      ${p?`<div class="role-person">${p.n||p.name}</div>${gradeHtml}<i class="ti ti-check role-check"></i>`:`<div class="role-empty">Spin to fill</div>`}
+    </div>`;
+  }).join('');
+  updateProgress();
+}
+
+/* ── ERA spin groups — pick one era bucket ── */
+const ERA_SPIN_LABELS={
+  classic:'Classic Hollywood (pre-1960)',
+  newhollywood:'New Hollywood (1960s–70s)',
+  eighties:'Blockbuster era (1980s)',
+  nineties:'Golden 90s (1990s)',
+  twothousands:'2000s prestige',
+  tens:'Modern (2010s)',
+  twenties:'Recent (2020s)',
+};
+
+/* ── BONUS spin pool (never name-range contradictions) ── */
+const BONUS_SPIN_POOL=[
+  {id:'winner',label:'Won an Oscar'},
+  {id:'nowin',label:'Never won an Oscar'},
+  {id:'rt90',label:'RT score 90%+'},
+  {id:'rt80',label:'RT score below 80%'},
+  {id:'bofhit',label:'Major box-office hit'},
+  {id:'cult',label:'Cult following'},
+  {id:'foreign',label:'Foreign-born talent'},
+  {id:'american',label:'American-born'},
+  {id:'stage',label:'Stage / theatre background'},
+  {id:'method',label:'Known for method acting'},
+  {id:'nameAF',label:'Last name: A–F'},
+  {id:'nameGL',label:'Last name: G–L'},
+  {id:'nameMR',label:'Last name: M–R'},
+  {id:'nameSZ',label:'Last name: S–Z'},
+];
+
+function randEra(){
+  const keys=Object.keys(ERA_SPIN_LABELS);
+  return keys[Math.floor(Math.random()*keys.length)];
+}
+function randBonus(excludeIds=[]){
+  const pool=BONUS_SPIN_POOL.filter(b=>!excludeIds.includes(b.id));
+  return pool[Math.floor(Math.random()*pool.length)];
+}
+
+const NAME_BONUS_IDS=['nameAF','nameGL','nameMR','nameSZ'];
+function pickConstraints(){
+  const eraId=randEra();
+  const b=randBonus(NAME_BONUS_IDS.includes('x')?[]:[]); /* always safe since era≠bonus */
+  return {eraId, bonusId:b.id, eraLabel:ERA_SPIN_LABELS[eraId], bonusLabel:b.label};
+}
+
+function candidatePasses(p, eraId, bonusId){
+  const eraPasses = p.era===eraId;
+  const bonusPasses = p.bonus&&p.bonus.includes(bonusId);
+  return {eraPasses, bonusPasses};
+}
+
+const SPIN_WORDS=['Drama','Epic','Thriller','True Story','1970s','Foreign','Method','Stage','A–F','Winner','90%+','Classic','Auteur','Modern','Indie'];
+
+function doSpin(){
+  const unfilled=ROLES.filter(r=>!picks[r.id]);
+  if(!unfilled.length)return;
+  const target=unfilled[Math.floor(Math.random()*unfilled.length)];
+  currentRole=target.id;
+
+  document.getElementById('spin-btn').disabled=true;
+  document.getElementById('draft-panel').style.display='none';
+  document.getElementById('genre-area').style.display='none';
+
+  const rv=[document.getElementById('rv0'),document.getElementById('rv1'),document.getElementById('rv2')];
+  rv.forEach(el=>{if(el)el.parentElement.className='reel spin-anim';});
+
+  const finalRole=ROLES.find(r=>r.id===target.id).label;
+  let constraints=null;
+  if(target.id!=='genre') constraints=pickConstraints();
+
+  let t=0;
+  const iv=setInterval(()=>{
+    rv.forEach((el,i)=>{
+      if(!el)return;
+      if(i===0)el.textContent=ROLES[Math.floor(Math.random()*ROLES.length)].label;
+      else el.textContent=SPIN_WORDS[Math.floor(Math.random()*SPIN_WORDS.length)];
+    });
+    t++;
+    if(t>16){
+      clearInterval(iv);
+      rv.forEach((el,i)=>{if(el)el.parentElement.className='reel locked';});
+      if(rv[0])rv[0].textContent=finalRole;
+      if(target.id==='genre'){
+        if(rv[1])rv[1].textContent='Pick any';
+        if(rv[2])rv[2].textContent='3 choices';
+        showGenrePicker();
+      } else {
+        if(rv[1])rv[1].textContent=constraints.eraLabel;
+        if(rv[2])rv[2].textContent=constraints.bonusLabel;
+        currentConstraints=constraints;
+        showCandidates(target.id, constraints);
+      }
+      renderGrid();
+    }
+  },55);
+}
+
+function showGenrePicker(){
+  const indices=[];
+  while(indices.length<3){const i=Math.floor(Math.random()*GENRES.length);if(!indices.includes(i))indices.push(i);}
+  const picker=document.getElementById('genre-picker');
+  picker.innerHTML=indices.map(i=>{
+    const g=GENRES[i];
+    return `<div class="genre-card" onclick="pickGenre(${i})">
+      <i class="ti ${g.icon} genre-icon"></i>
+      <div class="genre-name">${g.name}</div>
+      <div class="genre-examples">${g.examples}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('genre-area').style.display='block';
+}
+
+function pickGenre(idx){
+  picks['genre']={...GENRES[idx],n:GENRES[idx].name,grade:'A'};
+  document.getElementById('genre-area').style.display='none';
+  document.getElementById('spin-btn').disabled=false;
+  currentRole=null;
+  renderGrid();
+  if(Object.keys(picks).length===8){document.getElementById('spin-btn').disabled=true;}
+}
+
+function showCandidates(roleId, constraints){
+  const pool=DB[roleId];
+  if(!pool){return;}
+
+  const scored=pool.map(p=>{
+    const pn=p.n||p.name||'';
+    const {eraPasses,bonusPasses}=candidatePasses(p,constraints.eraId,constraints.bonusId);
+    const matches=(eraPasses?1:0)+(bonusPasses?1:0);
+    return{...p,matches,eraPasses,bonusPasses};
+  });
+
+  /* Partition: full match (2), partial (1), none (0) */
+  const full=scored.filter(p=>p.matches===2).sort((a,b)=>{const go={S:4,A:3,B:2,C:1,D:0};return go[b.grade]-go[a.grade];});
+  const partial=scored.filter(p=>p.matches===1).sort((a,b)=>{const go={S:4,A:3,B:2,C:1,D:0};return go[b.grade]-go[a.grade];});
+  const none=scored.filter(p=>p.matches===0).sort((a,b)=>{const go={S:4,A:3,B:2,C:1,D:0};return go[b.grade]-go[a.grade];});
+
+  /* Always show: all full matches + at least some partial/none so there are always risky picks */
+  currentCandidates=[...full,...partial,...none];
+
+  const roleName=ROLES.find(r=>r.id===roleId).label;
+  document.getElementById('draft-title').textContent='Choose your '+roleName;
+  document.getElementById('draft-sub').textContent=full.length+' perfect matches · '+partial.length+' partial · '+none.length+' off-constraint';
+  document.getElementById('draft-badge').textContent=currentCandidates.length+' candidates';
+
+  /* Constraint pills */
+  document.getElementById('constraint-row').innerHTML=
+    `<div class="constraint-pill era"><i class="ti ti-calendar-time" style="font-size:11px;margin-right:4px"></i>${constraints.eraLabel}</div>`+
+    `<div class="constraint-pill"><i class="ti ti-sparkles" style="font-size:11px;margin-right:4px"></i>${constraints.bonusLabel}</div>`;
+
+  document.getElementById('cands-scroll').innerHTML=currentCandidates.map((p,i)=>{
+    const pn=p.n||p.name||'?';
+    const color=getAvatarColor(pn);
+    const init=initials(pn);
+    const matchLabel=p.matches===2?'<span class="match-tag">2/2 match</span>':p.matches===1?'<span class="match-tag" style="background:rgba(212,175,55,0.12);color:var(--gold-dim)">1/2 match</span>':'<span class="mismatch-tag">No match</span>';
+    const eraChip=`<span class="attr-chip ${p.eraPasses?'match':''}">${ERA_SPIN_LABELS[p.era]||p.era}</span>`;
+    const bonusChips=(p.bonus||[]).slice(0,4).map(b=>{
+      const bl=BONUS_SPIN_POOL.find(x=>x.id===b);
+      const isMatch=b===constraints.bonusId;
+      return `<span class="attr-chip ${isMatch?'match':''}">${bl?bl.label:b}</span>`;
+    }).join('');
+    const gradeClass='grade-'+p.grade.toLowerCase();
+    const films=(p.films||[]).map(f=>`<span class="film-chip">${f}</span>`).join('');
+    const cardClass=p.matches===2?'cand best-match':p.matches===0?'cand risky':'cand';
+    return `<div class="${cardClass}" onclick="draftPick(${i})">
+      <div class="cand-avatar" style="background:${color}">${init}</div>
+      <div class="cand-body">
+        <div class="cand-top">
+          <span class="cand-name">${pn}</span>
+          <span class="cand-grade ${gradeClass}">${p.grade}</span>
+          ${matchLabel}
+        </div>
+        <div class="cand-films">${films}</div>
+        <div class="cand-attrs">${eraChip}${bonusChips}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('draft-panel').style.display='block';
+  document.getElementById('draft-panel').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function draftPick(idx){
+  picks[currentRole]=currentCandidates[idx];
+  document.getElementById('draft-panel').style.display='none';
+  document.getElementById('spin-btn').disabled=false;
+  currentRole=null;
+  renderGrid();
+  if(Object.keys(picks).length===8){
+    document.getElementById('spin-btn').disabled=true;
+  }
+}
+
+function gradeScore(g){return{S:95,A:85,B:72,C:58,D:42}[g]||70;}
+
+function simulate(){
+  const entries=Object.entries(picks);
+  const scores=entries.map(([id,p])=>gradeScore(p.grade));
+  const avg=scores.reduce((a,b)=>a+b,0)/scores.length;
+  const dir=gradeScore(picks.director?.grade||'B');
+  const gen=picks.genre?.score||82;
+  const la=gradeScore(picks.lead_actor?.grade||'B');
+  const lac=gradeScore(picks.lead_actress?.grade||'B');
+  const composite=(avg*0.35+dir*0.25+gen*0.08+la*0.16+lac*0.16);
+  const rawOscars=((composite-55)/45)*11;
+  const oscars=Math.max(0,Math.min(11,Math.round(rawOscars)));
+  const noms=Math.min(19,oscars+Math.floor(Math.random()*5)+3);
+  const bo=Math.round((composite/100)*380+Math.random()*100);
+  const crit=Math.min(99,Math.round(composite+Math.random()*10-5));
+
+  document.getElementById('s-oscars').textContent=oscars;
+  document.getElementById('s-noms').textContent=noms;
+  document.getElementById('s-bo').textContent='$'+bo+'M';
+  document.getElementById('s-crit').textContent=crit+'%';
+
+  const icon=oscars>=9?'ti-trophy':oscars>=5?'ti-award':'ti-star';
+  const hl=oscars>=9?'Historic Sweep':oscars>=6?'Major Award Winner':oscars>=3?'Strong Contender':'Awards Season Entrant';
+  const verdict=oscars>=9?'Your ensemble swept the night. A performance for the history books — every category was yours.':
+    oscars>=6?'The Academy took notice. A dominant run through the major categories with real hardware to show for it.':
+    oscars>=3?'A respectable awards run with wins in key categories. Critics and audiences both responded.':
+    'A tough draw from the constraints. The competition was fierce and the ensemble couldn\'t quite crack the top tier.';
+
+  const breakdownRows=ROLES.map(r=>{
+    const p=picks[r.id];
+    if(!p)return'';
+    const pn=p.n||p.name||'?';
+    const gc=GRADE_COLORS[p.grade]||'#aaa';
+    return `<div class="cast-row2">
+      <span class="cast-role-lbl">${r.label}</span>
+      <span class="cast-name-lbl">${pn}<span class="cast-grade-lbl" style="color:${gc}">${p.grade}</span></span>
+    </div>`;
+  }).join('');
+
+  const pct=Math.round((oscars/11)*100);
+  document.getElementById('result-area').innerHTML=`
+    <div class="result-box">
+      <div class="result-icon"><i class="ti ${icon}"></i></div>
+      <div class="result-hl">${hl}</div>
+      <div class="result-oscars">${oscars}</div>
+      <div class="result-oscars-word">Oscar${oscars!==1?'s':''} won</div>
+      <div class="result-stats-row">
+        <div class="result-stat-item"><span>Nominations</span><strong>${noms}</strong></div>
+        <div class="result-stat-item"><span>Critics</span><strong>${crit}%</strong></div>
+        <div class="result-stat-item"><span>Box office</span><strong>$${bo}M</strong></div>
+      </div>
+      <div class="result-bar-wrap"><div class="result-bar" id="rbar" style="width:0%"></div></div>
+      <div class="result-verdict">${verdict}</div>
+      <div class="cast-table">${breakdownRows}</div>
+      <button class="play-again" onclick="resetGame()"><i class="ti ti-refresh"></i> &nbsp;Play again</button>
+    </div>
+  `;
+  document.getElementById('result-area').style.display='block';
+  document.getElementById('result-area').scrollIntoView({behavior:'smooth'});
+  setTimeout(()=>{const b=document.getElementById('rbar');if(b)b.style.width=pct+'%';},150);
+}
+
+function resetGame(){
+  picks={};currentRole=null;currentConstraints=null;currentCandidates=[];
+  ['draft-panel','genre-area','result-area'].forEach(id=>{document.getElementById(id).style.display='none';});
+  document.getElementById('spin-btn').disabled=false;
+  document.getElementById('s-oscars').textContent='—';
+  document.getElementById('s-noms').textContent='—';
+  document.getElementById('s-bo').textContent='—';
+  document.getElementById('s-crit').textContent='—';
+  ['rv0','rv1','rv2'].forEach(id=>{const el=document.getElementById(id);if(el){el.textContent='—';el.parentElement.className='reel';}});
+  renderGrid();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+initProgress();
+renderGrid();
+</script>
+</body>
+</html>
