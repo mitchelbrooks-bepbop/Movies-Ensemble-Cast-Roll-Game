@@ -100,7 +100,14 @@ body{padding:0 0 60px;}
 .cand:hover{border-color:var(--gold-border);background:var(--surface2);transform:translateY(-2px);}
 .cand.best-match{border-color:rgba(76,175,130,0.4);}
 .cand.risky{border-color:rgba(224,82,82,0.25);}
-.cand-avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:var(--bg);flex-shrink:0;}
+.cand-avatar{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:var(--bg);flex-shrink:0;position:relative;overflow:hidden;border:2px solid rgba(255,255,255,0.08);}
+.cand-avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:50%;transition:opacity 0.3s;}
+.cand-avatar img.loading{opacity:0;}
+.cand-avatar img.loaded{opacity:1;}
+.cand-avatar .av-initials{position:relative;z-index:1;transition:opacity 0.3s;}
+.cand-avatar.has-photo .av-initials{opacity:0;}
+.cand-avatar.shimmer{background:linear-gradient(90deg,var(--bg3) 25%,var(--bg4) 50%,var(--bg3) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;}
+@keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
 .cand-body{flex:1;min-width:0;}
 .cand-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:5px;}
 .cand-name{font-size:14px;font-weight:700;color:var(--text);}
@@ -131,6 +138,8 @@ body{padding:0 0 60px;}
 .role-empty{font-size:11px;color:var(--text3);margin-top:4px;}
 .role-check{position:absolute;top:8px;right:10px;font-size:13px;color:var(--gold-dim);}
 .role-card-grade{position:absolute;bottom:8px;right:8px;font-size:10px;font-weight:700;padding:1px 5px;border-radius:4px;}
+.role-thumb{width:32px;height:32px;border-radius:50%;object-fit:cover;border:1.5px solid var(--gold-border);margin-bottom:5px;display:block;}
+.role-thumb-placeholder{width:32px;height:32px;border-radius:50%;background:var(--bg3);border:1.5px solid var(--gold-border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--gold-dim);margin-bottom:5px;}
 
 /* ── SIMULATE BTN ── */
 .simulate-btn{width:100%;padding:15px;background:transparent;border:1px solid var(--gold);border-radius:var(--radius-sm);font-size:16px;font-weight:700;color:var(--gold);cursor:pointer;margin-bottom:20px;letter-spacing:0.03em;transition:background 0.2s;}
@@ -517,6 +526,59 @@ const AVATAR_COLORS=['#7C5CBF','#2E8B57','#C0392B','#2471A3','#B7950B','#1E8449'
 
 let picks={}, currentRole=null, currentConstraints=null, currentCandidates=[];
 
+/* ── TMDB PHOTO SYSTEM ── */
+const TMDB_KEY='6ffc7434e42146e8676bc964637a8191';
+const TMDB_BASE='https://image.tmdb.org/t/p/w185';
+const photoCache={}; /* name → url string | null */
+
+async function fetchTMDBPhoto(name){
+  if(name in photoCache) return photoCache[name];
+  photoCache[name]=null; /* mark as pending / attempted */
+  try{
+    const res=await fetch(
+      `https://api.themoviedb.org/3/search/person?api_key=${TMDB_KEY}&query=${encodeURIComponent(name)}&language=en-US&page=1`
+    );
+    if(!res.ok) return null;
+    const data=await res.json();
+    const hit=data.results&&data.results[0];
+    if(hit&&hit.profile_path){
+      const url=TMDB_BASE+hit.profile_path;
+      photoCache[name]=url;
+      return url;
+    }
+  }catch(e){/* network failure — fall back to initials */}
+  return null;
+}
+
+/* Preload photos for a batch of names (fire-and-forget, updates DOM when ready) */
+function preloadPhotos(people){
+  people.forEach(async(pn)=>{
+    if(pn in photoCache) return;
+    const url=await fetchTMDBPhoto(pn);
+    if(url){
+      /* Update any already-rendered avatar with this name */
+      document.querySelectorAll(`[data-person="${CSS.escape(pn)}"]`).forEach(el=>{
+        injectPhoto(el, url, pn);
+      });
+    }
+  });
+}
+
+function injectPhoto(avatarEl, url, name){
+  avatarEl.classList.remove('shimmer');
+  avatarEl.classList.add('has-photo');
+  let img=avatarEl.querySelector('img');
+  if(!img){
+    img=document.createElement('img');
+    img.className='loading';
+    img.alt=name;
+    img.onload=()=>{img.classList.remove('loading');img.classList.add('loaded');};
+    img.onerror=()=>{avatarEl.classList.remove('has-photo');img.remove();};
+    avatarEl.appendChild(img);
+  }
+  img.src=url;
+}
+
 function getAvatarColor(name){
   let h=0; for(let c of name) h=(h*31+c.charCodeAt(0))&0xFFFFFF;
   return AVATAR_COLORS[Math.abs(h)%AVATAR_COLORS.length];
@@ -550,10 +612,26 @@ function renderGrid(){
     const isActive=currentRole===r.id;
     let gradeHtml='';
     if(p&&p.grade){gradeHtml=`<div class="role-card-grade" style="background:${GRADE_BG[p.grade]};color:${GRADE_COLORS[p.grade]}">${p.grade}</div>`;}
-    return `<div class="role-card ${p?'filled':''} ${isActive?'active':''}">
+    if(p){
+      const pn=p.n||p.name||'?';
+      const color=getAvatarColor(pn);
+      const init=initials(pn);
+      const cachedUrl=photoCache[pn];
+      const thumbHtml=cachedUrl
+        ?`<img class="role-thumb" src="${cachedUrl}" alt="${pn}">`
+        :`<div class="role-thumb-placeholder" style="background:${color}">${init}</div>`;
+      return `<div class="role-card filled ${isActive?'active':''}" data-role="${r.id}">
+        ${thumbHtml}
+        <div class="role-lbl">${r.label}</div>
+        <div class="role-person">${pn}</div>
+        ${gradeHtml}
+        <i class="ti ti-check role-check"></i>
+      </div>`;
+    }
+    return `<div class="role-card ${isActive?'active':''}">
       <i class="ti ${r.icon} role-icon"></i>
       <div class="role-lbl">${r.label}</div>
-      ${p?`<div class="role-person">${p.n||p.name}</div>${gradeHtml}<i class="ti ti-check role-check"></i>`:`<div class="role-empty">Spin to fill</div>`}
+      <div class="role-empty">Spin to fill</div>
     </div>`;
   }).join('');
   updateProgress();
@@ -709,7 +787,7 @@ function showCandidates(roleId, constraints){
     `<div class="constraint-pill era"><i class="ti ti-calendar-time" style="font-size:11px;margin-right:4px"></i>${constraints.eraLabel}</div>`+
     `<div class="constraint-pill"><i class="ti ti-sparkles" style="font-size:11px;margin-right:4px"></i>${constraints.bonusLabel}</div>`;
 
-  document.getElementById('cands-scroll').innerHTML=currentCandidates.map((p,i)=>{
+  const html=currentCandidates.map((p,i)=>{
     const pn=p.n||p.name||'?';
     const color=getAvatarColor(pn);
     const init=initials(pn);
@@ -723,8 +801,12 @@ function showCandidates(roleId, constraints){
     const gradeClass='grade-'+p.grade.toLowerCase();
     const films=(p.films||[]).map(f=>`<span class="film-chip">${f}</span>`).join('');
     const cardClass=p.matches===2?'cand best-match':p.matches===0?'cand risky':'cand';
+    /* Avatar: shimmer placeholder; photo injected async below */
+    const cachedUrl=photoCache[pn];
+    const avatarImg=cachedUrl?`<img src="${cachedUrl}" alt="${pn}" class="loaded"><span class="av-initials" style="color:var(--bg)">${init}</span>`:`<span class="av-initials" style="color:var(--bg)">${init}</span>`;
+    const avatarClass=`cand-avatar${cachedUrl?' has-photo':' shimmer'}`;
     return `<div class="${cardClass}" onclick="draftPick(${i})">
-      <div class="cand-avatar" style="background:${color}">${init}</div>
+      <div class="${avatarClass}" style="background:${color}" data-person="${pn.replace(/"/g,'&quot;')}">${avatarImg}</div>
       <div class="cand-body">
         <div class="cand-top">
           <span class="cand-name">${pn}</span>
@@ -737,16 +819,36 @@ function showCandidates(roleId, constraints){
     </div>`;
   }).join('');
 
+  document.getElementById('cands-scroll').innerHTML=html;
   document.getElementById('draft-panel').style.display='block';
   document.getElementById('draft-panel').scrollIntoView({behavior:'smooth',block:'nearest'});
+
+  /* Async: fetch any missing photos and inject them into the rendered cards */
+  const names=currentCandidates.map(p=>p.n||p.name||'').filter(Boolean);
+  names.forEach(async(pn)=>{
+    if(photoCache[pn]) return; /* already have it — skip */
+    const url=await fetchTMDBPhoto(pn);
+    if(!url) return;
+    document.querySelectorAll(`[data-person="${pn.replace(/"/g,'&quot;')}"]`).forEach(el=>{
+      injectPhoto(el, url, pn);
+    });
+  });
 }
 
 function draftPick(idx){
-  picks[currentRole]=currentCandidates[idx];
+  const picked=currentCandidates[idx];
+  picks[currentRole]=picked;
   document.getElementById('draft-panel').style.display='none';
   document.getElementById('spin-btn').disabled=false;
   currentRole=null;
   renderGrid();
+  /* If photo not yet cached, fetch it then re-render the grid thumbnail */
+  const pn=picked.n||picked.name||'';
+  if(pn&&!(pn in photoCache)){
+    fetchTMDBPhoto(pn).then(url=>{
+      if(url) renderGrid();
+    });
+  }
   if(Object.keys(picks).length===8){
     document.getElementById('spin-btn').disabled=true;
   }
