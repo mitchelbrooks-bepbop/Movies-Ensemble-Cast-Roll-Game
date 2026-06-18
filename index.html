@@ -167,6 +167,89 @@ body{padding:0 0 60px;}
 .cast-grade-lbl{font-size:11px;font-weight:700;margin-left:8px;}
 .play-again{width:100%;margin-top:18px;padding:12px;background:transparent;border:1px solid var(--gold-border);border-radius:var(--radius-sm);font-size:14px;font-weight:600;color:var(--gold-dim);cursor:pointer;transition:border-color 0.15s;}
 .play-again:hover{border-color:var(--gold);}
+
+/* ── MODE SELECT OVERLAY ── */
+.mode-overlay{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.85);z-index:100;display:flex;align-items:center;justify-content:center;padding:24px;}
+.mode-overlay.hidden{display:none;}
+.mode-box{max-width:620px;width:100%;text-align:center;}
+.mode-logo-line{width:60px;height:2px;background:var(--gold);margin:0 auto 20px;}
+.mode-title{font-size:32px;font-weight:800;color:var(--text);letter-spacing:-0.02em;margin-bottom:6px;}
+.mode-title span{color:var(--gold);}
+.mode-sub{font-size:13px;color:var(--text2);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:36px;}
+.mode-cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px;}
+.mode-card{background:var(--surface);border:2px solid rgba(255,255,255,0.06);border-radius:16px;padding:28px 20px;cursor:pointer;transition:border-color 0.2s,background 0.2s,transform 0.15s;text-align:left;}
+.mode-card:hover{border-color:var(--gold-border);background:var(--surface2);transform:translateY(-3px);}
+.mode-card.selected{border-color:var(--gold);background:rgba(212,175,55,0.06);}
+.mode-card-icon{font-size:32px;color:var(--gold);margin-bottom:14px;display:block;}
+.mode-card-name{font-size:17px;font-weight:700;color:var(--text);margin-bottom:6px;}
+.mode-card-desc{font-size:13px;color:var(--text2);line-height:1.6;}
+.mode-card-tag{display:inline-block;margin-top:10px;font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:0.06em;text-transform:uppercase;}
+.mode-card-tag.hard{background:rgba(224,82,82,0.12);color:var(--red);border:1px solid rgba(224,82,82,0.25);}
+.mode-card-tag.easy{background:rgba(76,175,130,0.12);color:var(--green);border:1px solid rgba(76,175,130,0.25);}
+.mode-start-btn{width:100%;padding:15px;background:var(--gold);border:none;border-radius:var(--radius-sm);font-size:16px;font-weight:700;color:#0C0C10;cursor:pointer;letter-spacing:0.02em;transition:background 0.2s;opacity:0.4;pointer-events:none;}
+.mode-start-btn.ready{opacity:1;pointer-events:all;}
+.mode-start-btn.ready:hover{background:#C8A030;}
+
+/* ── MODE TOGGLE BAR ── */
+.mode-toggle-bar{display:flex;align-items:center;justify-content:space-between;background:var(--surface);border:1px solid var(--gold-border);border-radius:var(--radius);padding:10px 14px;margin-bottom:16px;}
+.mode-toggle-label{display:flex;align-items:center;gap:8px;}
+.mode-badge{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:0.05em;text-transform:uppercase;}
+.mode-badge.luck{background:rgba(76,175,130,0.15);color:var(--green);border:1px solid rgba(76,175,130,0.3);}
+.mode-badge.constraint{background:rgba(212,175,55,0.12);color:var(--gold);border:1px solid var(--gold-border);}
+.mode-toggle-text{font-size:12px;color:var(--text2);}
+.mode-switch-btn{font-size:12px;font-weight:600;padding:6px 14px;background:transparent;border:1px solid var(--gold-border);border-radius:var(--radius-sm);color:var(--gold-dim);cursor:pointer;transition:border-color 0.15s,color 0.15s;white-space:nowrap;}
+.mode-switch-btn:hover{border-color:var(--gold);color:var(--gold);}
+
+/* ── MID-GAME CONTROLS BAR ── */
+.midgame-bar{display:flex;gap:8px;margin-bottom:16px;}
+.midgame-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 14px;background:transparent;border-radius:var(--radius-sm);font-size:12px;font-weight:600;cursor:pointer;transition:border-color 0.15s,color 0.15s,background 0.15s;white-space:nowrap;}
+.midgame-btn.restart{border:1px solid rgba(224,82,82,0.35);color:var(--red);}
+.midgame-btn.restart:hover{border-color:var(--red);background:rgba(224,82,82,0.07);}
+.midgame-btn.change-mode{border:1px solid var(--gold-border);color:var(--gold-dim);}
+.midgame-btn.change-mode:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-glow);}
+
+/* ── CONFIRM DIALOG ── */
+.confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:500;display:flex;align-items:center;justify-content:center;padding:24px;}
+.confirm-overlay.hidden{display:none;}
+.confirm-box{background:var(--bg3);border:1px solid var(--gold-border);border-radius:16px;padding:28px 24px;max-width:400px;width:100%;text-align:center;}
+.confirm-icon{font-size:28px;color:var(--gold);margin-bottom:12px;}
+.confirm-title{font-size:17px;font-weight:700;color:var(--text);margin-bottom:8px;}
+.confirm-body{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:20px;}
+.confirm-btns{display:flex;gap:10px;}
+.confirm-cancel{flex:1;padding:10px;background:transparent;border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius-sm);font-size:14px;color:var(--text2);cursor:pointer;}
+.confirm-cancel:hover{border-color:rgba(255,255,255,0.2);}
+.confirm-ok{flex:1;padding:10px;background:var(--gold);border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:700;color:#0C0C10;cursor:pointer;}
+.confirm-ok:hover{background:#C8A030;}
+.confirm-ok.danger{background:var(--red);}
+.confirm-ok.danger:hover{background:#c94444;}
+
+/* ── CONSTRAINT MATCH BONUS BADGE ── */
+.bonus-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(212,175,55,0.15);color:var(--gold);border:1px solid var(--gold-border);margin-left:auto;}
+.bonus-badge.full{background:rgba(76,175,130,0.15);color:var(--green);border-color:rgba(76,175,130,0.4);}
+.bonus-badge.partial{background:rgba(212,175,55,0.12);color:var(--gold-dim);border-color:var(--gold-border);}
+/* Glow pulse on full-match cards */
+.cand.best-match{border-color:rgba(76,175,130,0.5);box-shadow:0 0 0 1px rgba(76,175,130,0.15);}
+/* Match score tally in result cast table */
+.cast-match-bonus{font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px;margin-left:6px;background:rgba(76,175,130,0.12);color:var(--green);}
+.cast-match-none{font-size:10px;color:var(--text3);margin-left:6px;}
+
+/* ── LUCK MODE: 3-card picker ── */
+.luck-pick-area{background:var(--surface);border:1px solid var(--gold-border);border-radius:var(--radius);margin-bottom:16px;overflow:hidden;}
+.luck-pick-hdr{background:var(--bg2);padding:14px 16px;border-bottom:1px solid var(--gold-border);display:flex;justify-content:space-between;align-items:center;}
+.luck-pick-title{font-size:15px;font-weight:700;color:var(--text);}
+.luck-pick-sub{font-size:11px;color:var(--text2);margin-top:2px;}
+.luck-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:12px;}
+.luck-card{background:var(--bg2);border:1px solid rgba(255,255,255,0.06);border-radius:var(--radius);padding:14px 12px;cursor:pointer;text-align:center;transition:border-color 0.15s,background 0.15s,transform 0.12s;display:flex;flex-direction:column;align-items:center;gap:8px;}
+.luck-card:hover{border-color:var(--gold-border);background:var(--surface2);transform:translateY(-2px);}
+.luck-card-avatar{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:var(--bg);position:relative;overflow:hidden;border:2px solid rgba(255,255,255,0.08);}
+.luck-card-avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:50%;opacity:0;transition:opacity 0.3s;}
+.luck-card-avatar img.loaded{opacity:1;}
+.luck-card-avatar.has-photo .av-i{opacity:0;}
+.luck-card-avatar.shimmer{background:linear-gradient(90deg,var(--bg3) 25%,var(--bg4) 50%,var(--bg3) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;}
+.luck-card-name{font-size:13px;font-weight:700;color:var(--text);line-height:1.3;}
+.luck-card-grade{font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;}
+.luck-card-films{display:flex;flex-direction:column;gap:3px;width:100%;}
+.luck-film{font-size:10px;color:var(--text3);background:var(--bg3);border-radius:4px;padding:2px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 </style>
 </head>
 <body>
@@ -191,6 +274,93 @@ body{padding:0 0 60px;}
 </div>
 
 <div class="progress-row" id="progress-row"></div>
+
+<div id="mode-overlay" class="mode-overlay">
+
+  <div class="mode-box">
+
+    <div class="mode-title">
+      Choose Your Mode
+    </div>
+
+    <div class="mode-sub">
+      Select how you'd like to build your Oscar contender.
+    </div>
+
+    <div class="mode-cards">
+
+      <div class="mode-card"
+           onclick="selectMode('constraint',this)">
+        <div class="mode-card-icon">🎯</div>
+
+        <div class="mode-card-name">
+          Constraint Mode
+        </div>
+
+        <div class="mode-card-desc">
+          Spin constraints and draft candidates
+          that fit the requirements.
+        </div>
+
+        <div class="mode-card-tag hard">
+          Strategy
+        </div>
+      </div>
+
+      <div class="mode-card"
+           onclick="selectMode('luck',this)">
+        <div class="mode-card-icon">🎲</div>
+
+        <div class="mode-card-name">
+          Luck Mode
+        </div>
+
+        <div class="mode-card-desc">
+          No constraints.
+          Receive 3 random candidates each round.
+        </div>
+
+        <div class="mode-card-tag easy">
+          Casual
+        </div>
+      </div>
+
+    </div>
+
+    <button
+      id="mode-start-btn"
+      class="mode-start-btn"
+      onclick="startGame()">
+
+      Start Game
+
+    </button>
+
+  </div>
+
+</div>
+
+<div class="mode-toggle-bar">
+
+  <div class="mode-toggle-label">
+
+    <span
+      id="mode-badge"
+      class="mode-badge constraint">
+
+      Constraint Mode
+
+    </span>
+
+    <span id="mode-text">
+
+      Strategic Drafting
+
+    </span>
+
+  </div>
+
+</div>
 
 <div class="spin-area">
   <div class="spin-lbl">Spin the reels</div>
@@ -525,6 +695,7 @@ const GRADE_BG={S:'rgba(212,175,55,0.15)',A:'rgba(76,175,130,0.15)',B:'rgba(91,1
 const AVATAR_COLORS=['#7C5CBF','#2E8B57','#C0392B','#2471A3','#B7950B','#1E8449','#884EA0','#1A5276','#B03A2E'];
 
 let picks={}, currentRole=null, currentConstraints=null, currentCandidates=[];
+let gameMode = null;
 
 /* ── TMDB PHOTO SYSTEM ── */
 const TMDB_KEY='6ffc7434e42146e8676bc964637a8191';
@@ -604,6 +775,70 @@ function updateProgress(){
   });
   document.getElementById('simulate-btn').disabled=filled<8;
 }
+
+/* - Mode Selection - */
+function selectMode(mode, card){
+
+    gameMode = mode;
+
+    document
+      .querySelectorAll('.mode-card')
+      .forEach(c =>
+          c.classList.remove('selected'));
+
+    card.classList.add('selected');
+
+    document
+      .getElementById('mode-start-btn')
+      .classList.add('ready');
+}
+
+function startGame(){
+
+    if(!gameMode){
+        alert("Choose a mode first.");
+        return;
+    }
+
+    document
+      .getElementById('mode-overlay')
+      .style.display = 'none';
+
+    updateModeBar();
+}
+
+function updateModeBar(){
+
+    const badge =
+      document.getElementById('mode-badge');
+
+    const text =
+      document.getElementById('mode-text');
+
+    if(gameMode === 'luck'){
+
+        badge.textContent =
+          'Luck Mode';
+
+        badge.className =
+          'mode-badge luck';
+
+        text.textContent =
+          '3 Random Choices';
+
+    }else{
+
+        badge.textContent =
+          'Constraint Mode';
+
+        badge.className =
+          'mode-badge constraint';
+
+        text.textContent =
+          'Strategic Drafting';
+    }
+}
+
 
 function renderGrid(){
   const g=document.getElementById('roles-grid');
@@ -705,7 +940,7 @@ function doSpin(){
 
   const finalRole=ROLES.find(r=>r.id===target.id).label;
   let constraints=null;
-  if(target.id!=='genre') constraints=pickConstraints();
+  if(gameMode === 'constraint' && target.id!=='genre') constraints=pickConstraints();
 
   let t=0;
   const iv=setInterval(()=>{
@@ -724,10 +959,31 @@ function doSpin(){
         if(rv[2])rv[2].textContent='3 choices';
         showGenrePicker();
       } else {
-        if(rv[1])rv[1].textContent=constraints.eraLabel;
-        if(rv[2])rv[2].textContent=constraints.bonusLabel;
-        currentConstraints=constraints;
-        showCandidates(target.id, constraints);
+			if(gameMode === 'constraint'){
+
+				if(rv[1]) rv[1].textContent = constraints.eraLabel;
+				if(rv[2]) rv[2].textContent = constraints.bonusLabel;
+
+				currentConstraints = constraints;
+
+			}else{
+
+				if(rv[1]) rv[1].textContent = 'No Constraints';
+				if(rv[2]) rv[2].textContent = '3 Random Picks';
+
+				currentConstraints = null;
+			}
+        if(gameMode === 'luck'){
+
+		showLuckCandidates(
+			target.id
+			);
+		}else{
+		showCandidates(
+			target.id,
+			constraints
+			);
+		}
       }
       renderGrid();
     }
@@ -758,23 +1014,24 @@ function pickGenre(idx){
   if(Object.keys(picks).length===8){document.getElementById('spin-btn').disabled=true;}
 }
 
+/* ── CONSTRAINT MODE: full scored list ── */
 function showCandidates(roleId, constraints){
   const pool=DB[roleId];
-  if(!pool){return;}
+  if(!pool||!Array.isArray(pool)) return;
 
   const scored=pool.map(p=>{
-    const pn=p.n||p.name||'';
     const {eraPasses,bonusPasses}=candidatePasses(p,constraints.eraId,constraints.bonusId);
     const matches=(eraPasses?1:0)+(bonusPasses?1:0);
     return{...p,matches,eraPasses,bonusPasses};
   });
 
   /* Partition: full match (2), partial (1), none (0) */
-  const full=scored.filter(p=>p.matches===2).sort((a,b)=>{const go={S:4,A:3,B:2,C:1,D:0};return go[b.grade]-go[a.grade];});
-  const partial=scored.filter(p=>p.matches===1).sort((a,b)=>{const go={S:4,A:3,B:2,C:1,D:0};return go[b.grade]-go[a.grade];});
-  const none=scored.filter(p=>p.matches===0).sort((a,b)=>{const go={S:4,A:3,B:2,C:1,D:0};return go[b.grade]-go[a.grade];});
+  const gradeOrder={S:4,A:3,B:2,C:1,D:0};
+  const byGrade=(a,b)=>gradeOrder[b.grade]-gradeOrder[a.grade];
+  const full=scored.filter(p=>p.matches===2).sort(byGrade);
+  const partial=scored.filter(p=>p.matches===1).sort(byGrade);
+  const none=scored.filter(p=>p.matches===0).sort(byGrade);
 
-  /* Always show: all full matches + at least some partial/none so there are always risky picks */
   currentCandidates=[...full,...partial,...none];
 
   const roleName=ROLES.find(r=>r.id===roleId).label;
@@ -831,6 +1088,67 @@ function showCandidates(roleId, constraints){
     if(!url) return;
     document.querySelectorAll(`[data-person="${pn.replace(/"/g,'&quot;')}"]`).forEach(el=>{
       injectPhoto(el, url, pn);
+    });
+  });
+}
+
+/* ── LUCK MODE: 3 fully-random candidates, no constraints ── */
+function showLuckCandidates(roleId){
+  const pool=DB[roleId];
+  if(!pool||!Array.isArray(pool)) return;
+
+  /* Pick 3 distinct random entries */
+  const shuffled=[...pool].sort(()=>Math.random()-0.5);
+  currentCandidates=shuffled.slice(0,3).map(p=>({...p,matches:0,eraPasses:false,bonusPasses:false}));
+
+  const roleName=ROLES.find(r=>r.id===roleId).label;
+  document.getElementById('draft-title').textContent='Choose your '+roleName;
+  document.getElementById('draft-sub').textContent='3 random candidates — pick whoever you like';
+  document.getElementById('draft-badge').textContent='3 candidates';
+  document.getElementById('constraint-row').innerHTML=
+    '<div class="constraint-pill" style="background:rgba(76,175,130,0.1);color:var(--green);border-color:rgba(76,175,130,0.3)">🎲 Luck Mode — no constraints</div>';
+
+  const html=currentCandidates.map((p,i)=>{
+    const pn=p.n||p.name||'?';
+    const color=getAvatarColor(pn);
+    const init=initials(pn);
+    const gradeClass='grade-'+p.grade.toLowerCase();
+    const films=(p.films||[]).map(f=>`<span class="film-chip">${f}</span>`).join('');
+    const eraChip=`<span class="attr-chip">${ERA_SPIN_LABELS[p.era]||p.era}</span>`;
+    const bonusChips=(p.bonus||[]).slice(0,3).map(b=>{
+      const bl=BONUS_SPIN_POOL.find(x=>x.id===b);
+      return `<span class="attr-chip">${bl?bl.label:b}</span>`;
+    }).join('');
+    const cachedUrl=photoCache[pn];
+    const avatarImg=cachedUrl
+      ?`<img src="${cachedUrl}" alt="${pn}" class="loaded"><span class="av-initials" style="color:var(--bg)">${init}</span>`
+      :`<span class="av-initials" style="color:var(--bg)">${init}</span>`;
+    const avatarClass=`cand-avatar${cachedUrl?' has-photo':' shimmer'}`;
+    return `<div class="cand" onclick="draftPick(${i})">
+      <div class="${avatarClass}" style="background:${color}" data-person="${pn.replace(/"/g,'&quot;')}">${avatarImg}</div>
+      <div class="cand-body">
+        <div class="cand-top">
+          <span class="cand-name">${pn}</span>
+          <span class="cand-grade ${gradeClass}">${p.grade}</span>
+        </div>
+        <div class="cand-films">${films}</div>
+        <div class="cand-attrs">${eraChip}${bonusChips}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('cands-scroll').innerHTML=html;
+  document.getElementById('draft-panel').style.display='block';
+  document.getElementById('draft-panel').scrollIntoView({behavior:'smooth',block:'nearest'});
+
+  /* Async photo fetch */
+  currentCandidates.forEach(async p=>{
+    const pn=p.n||p.name||'';
+    if(!pn||photoCache[pn]) return;
+    const url=await fetchTMDBPhoto(pn);
+    if(!url) return;
+    document.querySelectorAll(`[data-person="${pn.replace(/"/g,'&quot;')}"]`).forEach(el=>{
+      injectPhoto(el,url,pn);
     });
   });
 }
@@ -919,6 +1237,7 @@ function simulate(){
 
 function resetGame(){
   picks={};currentRole=null;currentConstraints=null;currentCandidates=[];
+  gameMode=null;
   ['draft-panel','genre-area','result-area'].forEach(id=>{document.getElementById(id).style.display='none';});
   document.getElementById('spin-btn').disabled=false;
   document.getElementById('s-oscars').textContent='—';
@@ -926,6 +1245,10 @@ function resetGame(){
   document.getElementById('s-bo').textContent='—';
   document.getElementById('s-crit').textContent='—';
   ['rv0','rv1','rv2'].forEach(id=>{const el=document.getElementById(id);if(el){el.textContent='—';el.parentElement.className='reel';}});
+  /* Reset mode overlay */
+  document.querySelectorAll('.mode-card').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('mode-start-btn').classList.remove('ready');
+  document.getElementById('mode-overlay').style.display='flex';
   renderGrid();
   window.scrollTo({top:0,behavior:'smooth'});
 }
