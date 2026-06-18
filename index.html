@@ -45,9 +45,46 @@ body{padding:0 0 60px;}
 
 /* ── STATS ── */
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:20px;}
+.stats.has-momentum{grid-template-columns:repeat(5,1fr);}
 .stat{background:var(--surface);border:1px solid var(--gold-border);border-radius:var(--radius-sm);padding:12px 8px;text-align:center;}
 .stat-lbl{font-size:10px;color:var(--gold-dim);letter-spacing:0.08em;text-transform:uppercase;display:block;margin-bottom:4px;}
 .stat-val{font-size:22px;font-weight:700;color:var(--text);}
+
+/* ── MOMENTUM TROPHY TILE ── */
+#stat-momentum{border-color:rgba(212,175,55,0.3);background:rgba(212,175,55,0.03);padding:10px 8px;}
+#stat-momentum .stat-lbl{color:var(--gold-dim);}
+.trophy-wrap{position:relative;display:flex;align-items:center;justify-content:center;height:52px;}
+#trophy-svg{overflow:visible;filter:drop-shadow(0 0 0px rgba(212,175,55,0));}
+/* Fill rect animated via JS */
+#trophy-fill-rect{transition:y 0.6s cubic-bezier(0.34,1.56,0.64,1);}
+/* Glow on the SVG when high momentum */
+#trophy-svg.glowing{filter:drop-shadow(0 0 6px rgba(212,175,55,0.55));}
+/* Ripple burst */
+.trophy-ripple{position:absolute;top:50%;left:50%;width:0;height:0;border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;opacity:0;}
+@keyframes rippleBurst{
+  0%  {width:0;height:0;opacity:0.55;border-width:3px;}
+  60% {opacity:0.3;}
+  100%{width:72px;height:72px;opacity:0;border-width:1px;}
+}
+.trophy-ripple.pop-gold{border:3px solid var(--gold);animation:rippleBurst 0.55s ease-out forwards;}
+.trophy-ripple.pop-green{border:3px solid var(--green);animation:rippleBurst 0.55s ease-out forwards;}
+.trophy-ripple.pop-red{border:3px solid var(--red);animation:rippleBurst 0.55s ease-out forwards;}
+/* Trophy shake on penalty */
+@keyframes trophyShake{
+  0%,100%{transform:translateX(0)rotate(0);}
+  20%    {transform:translateX(-4px)rotate(-4deg);}
+  40%    {transform:translateX(4px)rotate(4deg);}
+  60%    {transform:translateX(-3px)rotate(-2deg);}
+  80%    {transform:translateX(3px)rotate(2deg);}
+}
+#trophy-svg.shake{animation:trophyShake 0.45s ease;}
+/* Trophy pulse on gain */
+@keyframes trophyPulse{
+  0%,100%{transform:scale(1);}
+  40%    {transform:scale(1.18);}
+  70%    {transform:scale(0.96);}
+}
+#trophy-svg.pulse{animation:trophyPulse 0.45s ease;}
 
 /* ── PROGRESS ── */
 .progress-row{display:flex;gap:5px;justify-content:center;margin-bottom:20px;}
@@ -141,6 +178,14 @@ body{padding:0 0 60px;}
 .role-thumb{width:32px;height:32px;border-radius:50%;object-fit:cover;border:1.5px solid var(--gold-border);margin-bottom:5px;display:block;}
 .role-thumb-placeholder{width:32px;height:32px;border-radius:50%;background:var(--bg3);border:1.5px solid var(--gold-border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--gold-dim);margin-bottom:5px;}
 
+/* ── MID-GAME CONTROLS BAR ── */
+.midgame-bar{display:flex;gap:8px;margin-bottom:16px;}
+.midgame-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 14px;background:transparent;border-radius:var(--radius-sm);font-size:12px;font-weight:600;cursor:pointer;transition:border-color 0.15s,color 0.15s,background 0.15s;white-space:nowrap;}
+.midgame-btn.restart{border:1px solid rgba(224,82,82,0.35);color:var(--red);}
+.midgame-btn.restart:hover{border-color:var(--red);background:rgba(224,82,82,0.07);}
+.midgame-btn.change-mode{border:1px solid var(--gold-border);color:var(--gold-dim);}
+.midgame-btn.change-mode:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-glow);}
+
 /* ── SIMULATE BTN ── */
 .simulate-btn{width:100%;padding:15px;background:transparent;border:1px solid var(--gold);border-radius:var(--radius-sm);font-size:16px;font-weight:700;color:var(--gold);cursor:pointer;margin-bottom:20px;letter-spacing:0.03em;transition:background 0.2s;}
 .simulate-btn:hover{background:rgba(212,175,55,0.08);}
@@ -200,14 +245,6 @@ body{padding:0 0 60px;}
 .mode-switch-btn{font-size:12px;font-weight:600;padding:6px 14px;background:transparent;border:1px solid var(--gold-border);border-radius:var(--radius-sm);color:var(--gold-dim);cursor:pointer;transition:border-color 0.15s,color 0.15s;white-space:nowrap;}
 .mode-switch-btn:hover{border-color:var(--gold);color:var(--gold);}
 
-/* ── MID-GAME CONTROLS BAR ── */
-.midgame-bar{display:flex;gap:8px;margin-bottom:16px;}
-.midgame-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 14px;background:transparent;border-radius:var(--radius-sm);font-size:12px;font-weight:600;cursor:pointer;transition:border-color 0.15s,color 0.15s,background 0.15s;white-space:nowrap;}
-.midgame-btn.restart{border:1px solid rgba(224,82,82,0.35);color:var(--red);}
-.midgame-btn.restart:hover{border-color:var(--red);background:rgba(224,82,82,0.07);}
-.midgame-btn.change-mode{border:1px solid var(--gold-border);color:var(--gold-dim);}
-.midgame-btn.change-mode:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-glow);}
-
 /* ── CONFIRM DIALOG ── */
 .confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:500;display:flex;align-items:center;justify-content:center;padding:24px;}
 .confirm-overlay.hidden{display:none;}
@@ -266,11 +303,54 @@ body{padding:0 0 60px;}
   </div>
 </div>
 
-<div class="stats">
+<div class="stats" id="stats-grid">
   <div class="stat"><span class="stat-lbl">Oscars</span><span class="stat-val" id="s-oscars">—</span></div>
   <div class="stat"><span class="stat-lbl">Nominations</span><span class="stat-val" id="s-noms">—</span></div>
   <div class="stat"><span class="stat-lbl">Box office</span><span class="stat-val" id="s-bo">—</span></div>
   <div class="stat"><span class="stat-lbl">Critics</span><span class="stat-val" id="s-crit">—</span></div>
+  <div class="stat" id="stat-momentum" style="display:none;">
+    <span class="stat-lbl">Momentum</span>
+    <div class="trophy-wrap">
+      <svg id="trophy-svg" viewBox="0 0 48 56" xmlns="http://www.w3.org/2000/svg" width="44" height="51">
+        <defs>
+          <!-- Clip path traces the trophy silhouette -->
+          <clipPath id="trophy-clip">
+            <path d="M10 2 H38 V18 C38 30 30 36 24 38 C18 36 10 30 10 18 Z
+                     M20 38 L20 44 L16 48 H32 L28 44 L28 38 Z
+                     M14 48 H34 V52 H14 Z
+                     M4 2 H12 V14 C12 18 8 20 4 18 Z
+                     M44 2 H36 V14 C36 18 40 20 44 18 Z"/>
+          </clipPath>
+          <!-- Fill rect animated by JS via CSS variable -->
+          <linearGradient id="trophy-grad" x1="0" y1="1" x2="0" y2="0">
+            <stop offset="0%" stop-color="#D4AF37"/>
+            <stop offset="100%" stop-color="#F5D76E"/>
+          </linearGradient>
+        </defs>
+        <!-- Outline (always visible) -->
+        <path class="trophy-outline"
+          d="M10 2 H38 V18 C38 30 30 36 24 38 C18 36 10 30 10 18 Z
+             M20 38 L20 44 L16 48 H32 L28 44 L28 38 Z
+             M14 48 H34 V52 H14 Z
+             M4 2 H12 V14 C12 18 8 20 4 18 Z
+             M44 2 H36 V14 C36 18 40 20 44 18 Z"
+          fill="none" stroke="rgba(212,175,55,0.25)" stroke-width="1.5"/>
+        <!-- Fill layer clipped to trophy shape -->
+        <rect id="trophy-fill-rect" x="0" y="54" width="48" height="54"
+          fill="url(#trophy-grad)" clip-path="url(#trophy-clip)"/>
+        <!-- Shine overlay on top of fill -->
+        <path class="trophy-shine"
+          d="M10 2 H38 V18 C38 30 30 36 24 38 C18 36 10 30 10 18 Z
+             M20 38 L20 44 L16 48 H32 L28 44 L28 38 Z
+             M14 48 H34 V52 H14 Z
+             M4 2 H12 V14 C12 18 8 20 4 18 Z
+             M44 2 H36 V14 C36 18 40 20 44 18 Z"
+          fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+      </svg>
+      <!-- Ripple burst element for animation -->
+      <div id="trophy-ripple" class="trophy-ripple"></div>
+    </div>
+  </div>
 </div>
 
 <div class="progress-row" id="progress-row"></div>
@@ -360,6 +440,28 @@ body{padding:0 0 60px;}
 
   </div>
 
+</div>
+
+<div class="midgame-bar" id="midgame-bar" style="display:none;">
+  <button class="midgame-btn restart" onclick="confirmAction('restart')">
+    <i class="ti ti-refresh"></i> Restart game
+  </button>
+  <button class="midgame-btn change-mode" onclick="confirmAction('changemode')">
+    <i class="ti ti-switch-horizontal"></i> Change mode
+  </button>
+</div>
+
+<!-- Confirm dialog -->
+<div class="confirm-overlay hidden" id="confirm-overlay">
+  <div class="confirm-box">
+    <div class="confirm-icon" id="confirm-icon">⚠️</div>
+    <div class="confirm-title" id="confirm-title">Are you sure?</div>
+    <div class="confirm-body" id="confirm-body">This will clear your current cast.</div>
+    <div class="confirm-btns">
+      <button class="confirm-cancel" onclick="closeConfirm()">Cancel</button>
+      <button class="confirm-ok danger" id="confirm-ok-btn" onclick="confirmOk()">Confirm</button>
+    </div>
+  </div>
 </div>
 
 <div class="spin-area">
@@ -794,16 +896,19 @@ function selectMode(mode, card){
 }
 
 function startGame(){
-
     if(!gameMode){
         alert("Choose a mode first.");
         return;
     }
-
-    document
-      .getElementById('mode-overlay')
-      .style.display = 'none';
-
+    document.getElementById('mode-overlay').style.display = 'none';
+    document.getElementById('midgame-bar').style.display = 'flex';
+    /* Show momentum tile only in constraint mode */
+    const showMomentum = gameMode === 'constraint';
+    const momentumTile = document.getElementById('stat-momentum');
+    const statsGrid = document.getElementById('stats-grid');
+    momentumTile.style.display = showMomentum ? '' : 'none';
+    if(showMomentum){ statsGrid.classList.add('has-momentum'); document.getElementById('s-momentum').textContent='0'; }
+    else { statsGrid.classList.remove('has-momentum'); }
     updateModeBar();
 }
 
@@ -1153,41 +1258,129 @@ function showLuckCandidates(roleId){
   });
 }
 
+/* ── LIVE MOMENTUM TROPHY (constraint mode only) ──
+   Max possible score: 7 picks × 9 = 63. Trophy fills 0→100% over that range.
+   Negative score → trophy empty (y stays at 54, showing nothing).
+   Fill rect: viewBox height=54, rect starts at y=54 (empty).
+   To show pct fill: y = 54 - (54 * pct/100)                              */
+const MOMENTUM_MAX = 63; /* 7 non-genre picks × 9pts each */
+
+function getMomentumTotal(){
+  return Object.values(picks).reduce((sum,p)=>{
+    if(p._constraintMatches===2) return sum+9;
+    if(p._constraintMatches===1) return sum+3;
+    if(p._constraintMatches===0) return sum-4;
+    return sum;
+  },0);
+}
+
+function updateMomentum(){
+  if(gameMode!=='constraint') return;
+  const total=getMomentumTotal();
+  const pct=Math.max(0,Math.min(100,(total/MOMENTUM_MAX)*100));
+  const fillY=54-(54*(pct/100));
+  const rect=document.getElementById('trophy-fill-rect');
+  const svg=document.getElementById('trophy-svg');
+  if(rect) rect.setAttribute('y', fillY.toFixed(1));
+  /* Glow when >60% full */
+  if(svg){
+    if(pct>=60) svg.classList.add('glowing');
+    else svg.classList.remove('glowing');
+  }
+}
+
+function animateTrophy(matches){
+  const svg=document.getElementById('trophy-svg');
+  const ripple=document.getElementById('trophy-ripple');
+  if(!svg||!ripple) return;
+  /* Remove any existing animation classes */
+  svg.classList.remove('pulse','shake');
+  ripple.className='trophy-ripple';
+  void svg.offsetWidth; /* reflow */
+  if(matches===2){
+    svg.classList.add('pulse');
+    ripple.classList.add('pop-green');
+  } else if(matches===1){
+    svg.classList.add('pulse');
+    ripple.classList.add('pop-gold');
+  } else {
+    svg.classList.add('shake');
+    ripple.classList.add('pop-red');
+  }
+  /* Clean up after animation */
+  setTimeout(()=>{
+    svg.classList.remove('pulse','shake');
+    ripple.className='trophy-ripple';
+  },600);
+}
+
 function draftPick(idx){
   const picked=currentCandidates[idx];
+  picked._constraintMatches=(gameMode==='constraint'&&currentConstraints)
+    ?(picked.matches||0)
+    :null;
   picks[currentRole]=picked;
   document.getElementById('draft-panel').style.display='none';
   document.getElementById('spin-btn').disabled=false;
   currentRole=null;
+  if(picked._constraintMatches!==null){
+    updateMomentum();          /* move fill first */
+    animateTrophy(picked._constraintMatches); /* then animate */
+  }
   renderGrid();
-  /* If photo not yet cached, fetch it then re-render the grid thumbnail */
   const pn=picked.n||picked.name||'';
   if(pn&&!(pn in photoCache)){
-    fetchTMDBPhoto(pn).then(url=>{
-      if(url) renderGrid();
-    });
+    fetchTMDBPhoto(pn).then(url=>{ if(url) renderGrid(); });
   }
   if(Object.keys(picks).length===8){
     document.getElementById('spin-btn').disabled=true;
   }
 }
 
-function gradeScore(g){return{S:95,A:85,B:72,C:58,D:42}[g]||70;}
+/* ── BASE GRADE SCORES (tighter band → harder to reach high composite) ── */
+function gradeScore(g){return{S:88,A:74,B:58,C:42,D:26}[g]||55;}
+
+/* ── CONSTRAINT MULTIPLIER ──
+   In constraint mode, picks that matched both constraints (+9pts each),
+   partial matches (+3pts), or ignored constraints entirely (−4pts).
+   A perfect all-2/2 run can add ~63 bonus pts across 7 picks — enough
+   to push 1–3 extra Oscars — but only when combined with strong grades. */
+function constraintBonus(p){
+  if(p._constraintMatches===null||p._constraintMatches===undefined) return 0;
+  if(p._constraintMatches===2) return 9;
+  if(p._constraintMatches===1) return 3;
+  return -4; /* no match: small penalty for ignoring the roll */
+}
 
 function simulate(){
   const entries=Object.entries(picks);
-  const scores=entries.map(([id,p])=>gradeScore(p.grade));
+
+  /* Score each pick: base grade + constraint bonus */
+  const scoredEntries=entries.map(([id,p])=>({id,p,raw:gradeScore(p.grade)+constraintBonus(p)}));
+  const scores=scoredEntries.map(e=>e.raw);
   const avg=scores.reduce((a,b)=>a+b,0)/scores.length;
-  const dir=gradeScore(picks.director?.grade||'B');
-  const gen=picks.genre?.score||82;
-  const la=gradeScore(picks.lead_actor?.grade||'B');
-  const lac=gradeScore(picks.lead_actress?.grade||'B');
-  const composite=(avg*0.35+dir*0.25+gen*0.08+la*0.16+lac*0.16);
-  const rawOscars=((composite-55)/45)*11;
-  const oscars=Math.max(0,Math.min(11,Math.round(rawOscars)));
-  const noms=Math.min(19,oscars+Math.floor(Math.random()*5)+3);
-  const bo=Math.round((composite/100)*380+Math.random()*100);
-  const crit=Math.min(99,Math.round(composite+Math.random()*10-5));
+
+  const getScore=(id)=>{const e=scoredEntries.find(x=>x.id===id);return e?e.raw:58;};
+  const dir=getScore('director');
+  const gen=picks.genre?.score||78;
+  const la=getScore('lead_actor');
+  const lac=getScore('lead_actress');
+
+  const composite=(avg*0.30+dir*0.25+gen*0.07+la*0.19+lac*0.19);
+
+  /* ── HARDER OSCAR CURVE ──
+     Power curve: composite must clear ~75 to reach 5+ Oscars.
+     A mostly-B cast (composite ~65) lands around 2–3.
+     A mixed A/S cast with good constraint play (~80) lands around 5–6.
+     A flawless S-grade + full-match run (~90) can reach 9–11. */
+  const normalized=Math.max((composite-58)/34,0);
+  const curved=Math.pow(normalized,1.6)*11;
+  const jitter=(Math.random()-0.5)*1.8;
+  const oscars=Math.max(0,Math.min(11,Math.round(curved+jitter)));
+
+  const noms=Math.min(19,oscars+Math.floor(Math.random()*4)+2);
+  const bo=Math.round((composite/100)*340+Math.random()*80);
+  const crit=Math.min(99,Math.round(composite*0.95+Math.random()*12-4));
 
   document.getElementById('s-oscars').textContent=oscars;
   document.getElementById('s-noms').textContent=noms;
@@ -1199,8 +1392,9 @@ function simulate(){
   const verdict=oscars>=9?'Your ensemble swept the night. A performance for the history books — every category was yours.':
     oscars>=6?'The Academy took notice. A dominant run through the major categories with real hardware to show for it.':
     oscars>=3?'A respectable awards run with wins in key categories. Critics and audiences both responded.':
-    'A tough draw from the constraints. The competition was fierce and the ensemble couldn\'t quite crack the top tier.';
+    'A tough draw. The competition was fierce and the ensemble couldn\'t quite crack the top tier.';
 
+  /* Build cast breakdown rows — no score annotations shown */
   const breakdownRows=ROLES.map(r=>{
     const p=picks[r.id];
     if(!p)return'';
@@ -1227,7 +1421,7 @@ function simulate(){
       <div class="result-bar-wrap"><div class="result-bar" id="rbar" style="width:0%"></div></div>
       <div class="result-verdict">${verdict}</div>
       <div class="cast-table">${breakdownRows}</div>
-      <button class="play-again" onclick="resetGame()"><i class="ti ti-refresh"></i> &nbsp;Play again</button>
+      <button class="play-again" onclick="resetGame(true)"><i class="ti ti-refresh"></i> &nbsp;Play again</button>
     </div>
   `;
   document.getElementById('result-area').style.display='block';
@@ -1235,20 +1429,59 @@ function simulate(){
   setTimeout(()=>{const b=document.getElementById('rbar');if(b)b.style.width=pct+'%';},150);
 }
 
-function resetGame(){
+/* ── MID-GAME RESTART / CHANGE MODE ── */
+let _pendingConfirmAction = null;
+
+function confirmAction(action){
+  _pendingConfirmAction = action;
+  const isChange = action === 'changemode';
+  document.getElementById('confirm-icon').textContent = isChange ? '🔀' : '🔄';
+  document.getElementById('confirm-title').textContent = isChange ? 'Change Mode?' : 'Restart Game?';
+  document.getElementById('confirm-body').textContent = isChange
+    ? 'Switching modes will clear your current cast and return you to mode selection. Your progress will be lost.'
+    : 'Restarting will clear your entire cast. All picks will be lost.';
+  document.getElementById('confirm-ok-btn').textContent = isChange ? 'Change Mode' : 'Restart';
+  document.getElementById('confirm-overlay').classList.remove('hidden');
+}
+
+function closeConfirm(){
+  document.getElementById('confirm-overlay').classList.add('hidden');
+  _pendingConfirmAction = null;
+}
+
+function confirmOk(){
+  const action = _pendingConfirmAction; /* capture before closeConfirm nulls it */
+  closeConfirm();
+  if(action === 'restart'){
+    resetGame(false);
+  } else if(action === 'changemode'){
+    resetGame(true);
+  }
+}
+
+function resetGame(showModeSelect = true){
   picks={};currentRole=null;currentConstraints=null;currentCandidates=[];
-  gameMode=null;
   ['draft-panel','genre-area','result-area'].forEach(id=>{document.getElementById(id).style.display='none';});
   document.getElementById('spin-btn').disabled=false;
   document.getElementById('s-oscars').textContent='—';
   document.getElementById('s-noms').textContent='—';
   document.getElementById('s-bo').textContent='—';
   document.getElementById('s-crit').textContent='—';
+  document.getElementById('s-momentum').textContent='0';
+  const resetRect=document.getElementById('trophy-fill-rect');
+  const resetSvg=document.getElementById('trophy-svg');
+  if(resetRect) resetRect.setAttribute('y','54');
+  if(resetSvg) resetSvg.classList.remove('glowing','pulse','shake');
   ['rv0','rv1','rv2'].forEach(id=>{const el=document.getElementById(id);if(el){el.textContent='—';el.parentElement.className='reel';}});
-  /* Reset mode overlay */
-  document.querySelectorAll('.mode-card').forEach(c=>c.classList.remove('selected'));
-  document.getElementById('mode-start-btn').classList.remove('ready');
-  document.getElementById('mode-overlay').style.display='flex';
+  if(showModeSelect){
+    gameMode=null;
+    document.getElementById('midgame-bar').style.display='none';
+    document.getElementById('stat-momentum').style.display='none';
+    document.getElementById('stats-grid').classList.remove('has-momentum');
+    document.querySelectorAll('.mode-card').forEach(c=>c.classList.remove('selected'));
+    document.getElementById('mode-start-btn').classList.remove('ready');
+    document.getElementById('mode-overlay').style.display='flex';
+  }
   renderGrid();
   window.scrollTo({top:0,behavior:'smooth'});
 }
